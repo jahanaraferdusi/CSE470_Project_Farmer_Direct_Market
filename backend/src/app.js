@@ -1,0 +1,45 @@
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
+const sellerRoutes = require("./routes/sellerRoutes");
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const seedRoutes = require("./routes/seedRoutes");
+
+const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
+
+const app = express();
+
+
+
+app.use(cors());
+app.use(morgan("dev"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+  res.send("Welcome to Farmer Direct Market Platform API");
+});
+
+app.get("/test", (req, res) => {
+  res.status(200).json({ message: "API endpoint is working" });
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/sellers", sellerRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/seed", seedRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+module.exports = app;
+
