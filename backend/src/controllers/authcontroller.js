@@ -17,6 +17,7 @@ const register = async (req, res, next) => {
       password,
       role,
       sellerVerified: role === "seller" ? false : true,
+      isBanned: false,
     });
 
     res.status(201).json({
@@ -27,6 +28,7 @@ const register = async (req, res, next) => {
         email: user.email,
         role: user.role,
         sellerVerified: user.sellerVerified,
+        isBanned: user.isBanned,
       },
       token: createToken(user),
     });
@@ -44,6 +46,10 @@ const login = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({ message: "Your account has been banned" });
+    }
+
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -57,6 +63,7 @@ const login = async (req, res, next) => {
         email: user.email,
         role: user.role,
         sellerVerified: user.sellerVerified,
+        isBanned: user.isBanned,
       },
       token: createToken(user),
     });
