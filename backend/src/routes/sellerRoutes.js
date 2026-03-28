@@ -1,6 +1,6 @@
 const express = require("express");
 const { isLoggedIn } = require("../middlewares/authMiddleware");
-const authorizeRoles = require("../middlewares/roleMiddleware");
+const  authorizeRoles  = require("../middlewares/roleMiddleware");
 const {
   getPendingSellers,
   verifySeller,
