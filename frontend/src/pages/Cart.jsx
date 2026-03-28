@@ -13,6 +13,19 @@ const Cart = () => {
     }
   };
 
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      if (quantity < 1) {
+        await API.delete(`/cart/${productId}`);
+      } else {
+        await API.put(`/cart/${productId}`, { quantity });
+      }
+      fetchCart();
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to update quantity");
+    }
+  };
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -30,8 +43,28 @@ const Cart = () => {
             style={{ border: "1px solid #ccc", padding: "10px", margin: "10px" }}
           >
             <p>Product: {item.product?.name}</p>
-            <p>Quantity: {item.quantity}</p>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                margin: "10px 0",
+              }}
+            >
+              <button onClick={() => updateQuantity(item.product?._id, item.quantity - 1)}>
+                -
+              </button>
+
+              <span>Quantity: {item.quantity}</span>
+
+              <button onClick={() => updateQuantity(item.product?._id, item.quantity + 1)}>
+                +
+              </button>
+            </div>
+
             <p>Price: ৳ {item.product?.price}</p>
+            <p>Total: ৳ {(item.product?.price || 0) * item.quantity}</p>
           </div>
         ))
       )}
