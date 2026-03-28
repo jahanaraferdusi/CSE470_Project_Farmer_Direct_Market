@@ -1,35 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
-const Register = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "customer",
-  });
+const initialForm = {
+  name: "",
+  email: "",
+  password: "",
+  role: "customer",
+};
 
+const Register = () => {
+  const [form, setForm] = useState(initialForm);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setForm(initialForm);
+  }, []);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await API.post("/auth/register", form);
+      const payload = { ...form };
+      await API.post("/auth/register", payload);
+
+      setForm(initialForm);
       alert("Registration successful");
-      navigate("/login");
+      navigate("/login", { replace: true });
     } catch (error) {
+      setForm((prev) => ({ ...prev, password: "" }));
       alert(error.response?.data?.message || "Registration failed");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} autoComplete="off">
       <h2>Register</h2>
 
       <input
@@ -38,6 +48,7 @@ const Register = () => {
         placeholder="Enter name"
         value={form.name}
         onChange={handleChange}
+        autoComplete="off"
       />
 
       <input
@@ -46,6 +57,7 @@ const Register = () => {
         placeholder="Enter email"
         value={form.email}
         onChange={handleChange}
+        autoComplete="off"
       />
 
       <input
@@ -54,6 +66,7 @@ const Register = () => {
         placeholder="Enter password"
         value={form.password}
         onChange={handleChange}
+        autoComplete="new-password"
       />
 
       <select name="role" value={form.role} onChange={handleChange}>
