@@ -23,20 +23,25 @@ const Navbar = () => {
       )}
 
       {user?.role === "admin" && (
-        <Link to="/admin/sellers">Verify Sellers</Link>
+        <>
+          <Link to="/admin/sellers">Verify Sellers / Manage Users</Link>{" "}
+        </>
       )}
 
       {user?.role === "seller" && (
         <>
           <Link to="/seller/add-product">Add Product</Link>{" "}
-          <Link to="/seller/stock">Manage Stock</Link>
+          <Link to="/seller/stock">Manage Stock</Link>{" "}
+          <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
+          <Link to="/seller-wishlist">Wishlist Stats</Link>
         </>
       )}
 
       {user?.role === "customer" && (
         <>
           <Link to="/cart">Cart</Link>{" "}
-          <Link to="/checkout">Checkout</Link>
+          <Link to="/checkout">Checkout</Link>{" "}
+          <Link to="/wishlist">Wishlist</Link>
         </>
       )}
 
