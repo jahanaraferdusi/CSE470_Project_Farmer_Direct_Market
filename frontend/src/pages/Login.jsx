@@ -1,42 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
-const Login = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+const initialForm = {
+  email: "",
+  password: "",
+};
 
+const Login = () => {
+  const [form, setForm] = useState(initialForm);
   const { loginUser } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setForm(initialForm);
+  }, []);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await API.post("/auth/login", form);
+      const payload = { ...form };
+      const res = await API.post("/auth/login", payload);
+
+      setForm(initialForm);
       loginUser(res.data.user, res.data.token);
 
       if (res.data.user.role === "admin") {
-        navigate("/admin/sellers");
+        navigate("/admin/sellers", { replace: true });
       } else if (res.data.user.role === "seller") {
-        navigate("/seller/add-product");
+        const alertRes = await API.get("/products/seller/spoilage-alerts");
+
+        if (alertRes.data.hasSpoilageAlert) {
+          alert("You have stock spoilage alerts. Redirecting now.");
+          navigate("/seller/spoilage-alerts", { replace: true });
+        } else {
+          navigate("/seller/add-product", { replace: true });
+        }
       } else {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     } catch (error) {
+      setForm((prev) => ({ ...prev, password: "" }));
       alert(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} autoComplete="off">
       <h2>Login</h2>
 
       <input
@@ -45,6 +62,7 @@ const Login = () => {
         placeholder="Enter email"
         value={form.email}
         onChange={handleChange}
+        autoComplete="off"
       />
 
       <input
@@ -53,6 +71,7 @@ const Login = () => {
         placeholder="Enter password"
         value={form.password}
         onChange={handleChange}
+        autoComplete="new-password"
       />
 
       <button type="submit">Login</button>
