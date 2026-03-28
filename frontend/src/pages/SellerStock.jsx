@@ -1,38 +1,54 @@
-
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const SellerStock = () => {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [stockInputs, setStockInputs] = useState({});
+  const [expiryInputs, setExpiryInputs] = useState({});
 
   const fetchProducts = async () => {
     try {
-      const res = await API.get("/products");
+      if (!user?._id) return;
+
+      const res = await API.get(`/products/seller/${user._id}`);
       setProducts(res.data);
 
-      const initialInputs = {};
+      const initialStockInputs = {};
+      const initialExpiryInputs = {};
+
       res.data.forEach((product) => {
-        initialInputs[product._id] = product.stock;
+        initialStockInputs[product._id] = product.stock;
+        initialExpiryInputs[product._id] = product.expiryDate
+          ? new Date(product.expiryDate).toISOString().split("T")[0]
+          : "";
       });
-      setStockInputs(initialInputs);
+
+      setStockInputs(initialStockInputs);
+      setExpiryInputs(initialExpiryInputs);
     } catch (error) {
-      alert("Failed to load products");
+      alert(error.response?.data?.message || "Failed to load products");
     }
   };
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [user]);
 
-  const handleInputChange = (productId, value) => {
+  const handleStockChange = (productId, value) => {
     setStockInputs({ ...stockInputs, [productId]: value });
+  };
+
+  const handleExpiryChange = (productId, value) => {
+    setExpiryInputs({ ...expiryInputs, [productId]: value });
   };
 
   const handleUpdateStock = async (productId) => {
     try {
       await API.put(`/products/${productId}/stock`, {
         stock: Number(stockInputs[productId]),
+        expiryDate: expiryInputs[productId] || null,
       });
 
       alert("Stock updated successfully");
@@ -56,17 +72,38 @@ const SellerStock = () => {
           >
             <p>Name: {product.name}</p>
             <p>Current Stock: {product.stock}</p>
+            <p>
+              Expiry Date:{" "}
+              {product.expiryDate
+                ? new Date(product.expiryDate).toLocaleDateString()
+                : "Not set"}
+            </p>
 
             {product.lowStockAlert && (
               <p style={{ color: "red" }}>Low stock alert</p>
             )}
 
+            {product.spoilageStatus === "warning" && (
+              <p style={{ color: "orange" }}>
+                Spoilage warning: within 30 days of expiry
+              </p>
+            )}
+
+            {product.spoilageStatus === "spoiled" && (
+              <p style={{ color: "red" }}>Product already spoiled</p>
+            )}
+
             <input
               type="number"
               value={stockInputs[product._id] || ""}
-              onChange={(e) =>
-                handleInputChange(product._id, e.target.value)
-              }
+              onChange={(e) => handleStockChange(product._id, e.target.value)}
+              placeholder="Update stock"
+            />
+
+            <input
+              type="date"
+              value={expiryInputs[product._id] || ""}
+              onChange={(e) => handleExpiryChange(product._id, e.target.value)}
             />
 
             <button onClick={() => handleUpdateStock(product._id)}>
