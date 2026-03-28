@@ -9,8 +9,11 @@ import Register from "./pages/Register";
 import AdminSellerApproval from "./pages/AdminSellerApproval";
 import SellerAddProduct from "./pages/SellerAddProduct";
 import SellerStock from "./pages/SellerStock";
+import SellerWishlistStats from "./pages/SellerWishlistStats"; 
+import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Wishlist from "./pages/Wishlist"; // (if customer wishlist exists)
 
 function App() {
   return (
@@ -49,11 +52,40 @@ function App() {
           }
         />
 
+
+        <Route
+          path="/seller-wishlist"
+          element={
+            <PrivateRoute role="seller">
+              <SellerWishlistStats />
+            </PrivateRoute>
+          }
+        />
+
+
+        <Route
+          path="/wishlist"
+          element={
+            <PrivateRoute role="customer">
+              <Wishlist />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/cart"
           element={
             <PrivateRoute role="customer">
               <Cart />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/spoilage-alerts"
+          element={
+            <PrivateRoute role="seller">
+              <SellerSpoilageAlerts />
             </PrivateRoute>
           }
         />
