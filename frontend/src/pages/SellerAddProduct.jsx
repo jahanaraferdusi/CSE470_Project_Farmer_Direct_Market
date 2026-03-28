@@ -9,6 +9,7 @@ const SellerAddProduct = () => {
     stock: "",
     description: "",
     lowStockThreshold: 5,
+    expiryDate: "",
   });
 
   const handleChange = (e) => {
@@ -24,6 +25,7 @@ const SellerAddProduct = () => {
         price: Number(form.price),
         stock: Number(form.stock),
         lowStockThreshold: Number(form.lowStockThreshold),
+        expiryDate: form.expiryDate || null,
       });
 
       alert("Product added successfully");
@@ -35,6 +37,7 @@ const SellerAddProduct = () => {
         stock: "",
         description: "",
         lowStockThreshold: 5,
+        expiryDate: "",
       });
     } catch (error) {
       alert(error.response?.data?.message || "Failed to add product");
@@ -89,6 +92,13 @@ const SellerAddProduct = () => {
         name="lowStockThreshold"
         placeholder="Low stock threshold"
         value={form.lowStockThreshold}
+        onChange={handleChange}
+      />
+
+      <input
+        type="date"
+        name="expiryDate"
+        value={form.expiryDate}
         onChange={handleChange}
       />
 
