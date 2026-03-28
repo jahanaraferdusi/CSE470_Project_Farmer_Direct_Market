@@ -39,6 +39,29 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
+
+    expiryDate: {
+      type: Date,
+      default: null,
+    },
+    spoilageAlert: {
+      type: Boolean,
+      default: false,
+    },
+    spoilageAlertDate: {
+      type: Date,
+      default: null,
+    },
+    spoilageStatus: {
+      type: String,
+      enum: ["fresh", "warning", "spoiled"],
+      default: "fresh",
+    },
+
+    wishlistCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
