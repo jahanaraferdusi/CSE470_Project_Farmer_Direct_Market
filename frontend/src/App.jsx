@@ -9,11 +9,12 @@ import Register from "./pages/Register";
 import AdminSellerApproval from "./pages/AdminSellerApproval";
 import SellerAddProduct from "./pages/SellerAddProduct";
 import SellerStock from "./pages/SellerStock";
-import SellerWishlistStats from "./pages/SellerWishlistStats"; 
+import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Wishlist from "./pages/Wishlist"; // (if customer wishlist exists)
+import Wishlist from "./pages/Wishlist";
+import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import HarvestCalendar from "./pages/HarvestCalendar";
 import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
 import ProductReview from "./pages/ProductReview";
@@ -57,7 +58,6 @@ function App() {
           }
         />
 
-
         <Route
           path="/seller-wishlist"
           element={
@@ -66,7 +66,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
 
         <Route
           path="/wishlist"
@@ -96,6 +95,15 @@ function App() {
         />
 
         <Route
+          path="/customer/activity"
+          element={
+            <PrivateRoute role="customer">
+              <CustomerActivityTabs />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/checkout"
           element={
             <PrivateRoute role="customer">
@@ -103,39 +111,44 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
+
         <Route
-           path="/seller/harvest-calendar"
-               element={
+          path="/seller/harvest-calendar"
+          element={
             <PrivateRoute role="seller">
-                <SellerHarvestCalendar />
+              <SellerHarvestCalendar />
             </PrivateRoute>
-                        }
-        />
-        <Route
-           path="/reviews/:productId"
-           element={
-             <PrivateRoute role="customer">
-               <ProductReview />
-             </PrivateRoute>
-                    } />
-        <Route
-            path="/seller/reviews"
-            element={
-              <PrivateRoute role="seller">
-                <SellerProductReviews />
-              </PrivateRoute>
-            }
-        />
-        <Route
-             path="/chat"
-             element={
-               <PrivateRoute allowedRoles={["customer", "seller"]}>
-                 <Chat />
-               </PrivateRoute>
-             }
+          }
         />
 
+        <Route
+          path="/reviews/:productId"
+          element={
+            <PrivateRoute role="customer">
+              <ProductReview />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/reviews"
+          element={
+            <PrivateRoute role="seller">
+              <SellerProductReviews />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute allowedRoles={["customer", "seller"]}>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

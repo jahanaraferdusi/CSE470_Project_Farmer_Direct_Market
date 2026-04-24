@@ -8,6 +8,7 @@ const ProductCard = ({ product, onAddToCart }) => {
 
   const userId = localStorage.getItem("userId");
   const user = JSON.parse(localStorage.getItem("user"));
+
   const handleAddToWishlist = async () => {
     if (!userId) {
       alert("Please login first");
@@ -34,37 +35,39 @@ const ProductCard = ({ product, onAddToCart }) => {
       setLoading(false);
     }
   };
-const handleChatWithSeller = async () => {
-  if (!userId) {
-    alert("Please login first");
-    return;
-  }
 
-  try {
-    setLoading(true);
+  const handleChatWithSeller = async () => {
+    if (!userId) {
+      alert("Please login first");
+      return;
+    }
 
-    await axios.post(
-      "http://localhost:5000/api/chats/send",
-      {
-        productId: product._id,
-        text: `Hi, I am interested in your product: ${product.name}`,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      setLoading(true);
+
+      await axios.post(
+        "http://localhost:5000/api/chats/send",
+        {
+          productId: product._id,
+          text: `Hi, I am interested in your product: ${product.name}`,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-    alert("Chat started successfully");
-    window.location.href = "/chat";
-  } catch (err) {
-    console.error(err);
-    alert(err.response?.data?.message || "Failed to start chat");
-  } finally {
-    setLoading(false);
-  }
-};
+      alert("Chat started successfully");
+      window.location.href = "/chat";
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to start chat");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -76,31 +79,45 @@ const handleChatWithSeller = async () => {
     >
       <h3>{product.name}</h3>
       <p>Category: {product.category}</p>
-      <p>Price: ৳ {product.price}</p>
+      <p>
+        Price: ৳ {product.price}{" "}
+        {product.isDiscounted && product.originalPrice ? (
+          <>
+            <span style={{ textDecoration: "line-through", color: "#777", marginLeft: "6px" }}>
+              ৳ {product.originalPrice}
+            </span>
+            <span style={{ color: "crimson", fontWeight: "bold", marginLeft: "6px" }}>
+              {product.discountPercentage}% OFF
+            </span>
+          </>
+        ) : null}
+      </p>
       <p>Stock: {product.stock}</p>
       <p>
-           Rating: {product.averageRating || 0} ⭐ ({product.reviewCount || 0} reviews)
+        Rating: {product.averageRating || 0} ⭐ ({product.reviewCount || 0} reviews)
       </p>
 
-    <Link to={`/reviews/${product._id}`}>
-          <button>Review Product</button>
-    </Link>
-    {user?.role === "customer" && (
-  <button
-    onClick={handleChatWithSeller}
-    disabled={loading}
-    style={{
-      padding: "8px",
-      backgroundColor: "blue",
-      color: "white",
-      border: "none",
-      cursor: "pointer",
-      marginLeft: "5px",
-    }}
-  >
-    Chat with Seller
-  </button>
-)}
+      <Link to={`/reviews/${product._id}`}>
+        <button>Review Product</button>
+      </Link>
+
+      {user?.role === "customer" && (
+        <button
+          onClick={handleChatWithSeller}
+          disabled={loading}
+          style={{
+            padding: "8px",
+            backgroundColor: "blue",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+            marginLeft: "5px",
+          }}
+        >
+          Chat with Seller
+        </button>
+      )}
+
       {product.stock > 0 ? (
         <button
           onClick={() => onAddToCart(product._id)}

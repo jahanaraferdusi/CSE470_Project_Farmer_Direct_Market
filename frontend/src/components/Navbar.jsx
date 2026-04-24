@@ -34,9 +34,9 @@ const Navbar = () => {
           <Link to="/seller/add-product">Add Product</Link>{" "}
           <Link to="/seller/stock">Manage Stock</Link>{" "}
           <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
-          <Link to="/seller-wishlist">Wishlist Stats</Link>
-          <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
-          <Link to="/seller/reviews">Product Reviews</Link>
+          <Link to="/seller-wishlist">Wishlist Stats</Link>{" "}
+          <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>{" "}
+          <Link to="/seller/reviews">Product Reviews</Link>{" "}
         </>
       )}
 
@@ -44,7 +44,8 @@ const Navbar = () => {
         <>
           <Link to="/cart">Cart</Link>{" "}
           <Link to="/checkout">Checkout</Link>{" "}
-          <Link to="/wishlist">Wishlist</Link>
+          <Link to="/wishlist">Wishlist</Link>{" "}
+          <Link to="/customer/activity">My Activity</Link>{" "}
         </>
       )}
 
@@ -53,9 +54,10 @@ const Navbar = () => {
           Logout
         </button>
       )}
+
       {(user?.role === "customer" || user?.role === "seller") && (
-      <Link to="/chat">Chat</Link>
-     )}
+        <Link to="/chat">Chat</Link>
+      )}
     </nav>
   );
 };
