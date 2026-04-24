@@ -56,6 +56,7 @@ const checkout = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+<<<<<<< HEAD
   }};
 const getMyOrders = async (req, res, next) => {
   try {
@@ -66,10 +67,15 @@ const getMyOrders = async (req, res, next) => {
     res.status(200).json(orders);
   } catch (error) {
     next(error);
+=======
+>>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
   }
 };
 
 module.exports = {
   checkout,
+<<<<<<< HEAD
   getMyOrders,
+=======
+>>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
 };
