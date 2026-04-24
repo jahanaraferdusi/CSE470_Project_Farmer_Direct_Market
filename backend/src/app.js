@@ -11,6 +11,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes.js");
 const seedRoutes = require("./routes/seedRoutes");
+const giftCardRoutes = require("./routes/giftCardRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 

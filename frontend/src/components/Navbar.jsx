@@ -12,44 +12,53 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
-      <Link to="/">Home</Link>{" "}
+    <nav className="navbar">
+      <Link to="/" className="navbar-brand">
+        Farmer Direct Market
+      </Link>
 
-      {!user && (
-        <>
-          <Link to="/login">Login</Link>{" "}
-          <Link to="/register">Register</Link>
-        </>
-      )}
+      <div className="navbar-links">
+        <Link to="/">Home</Link>
 
-      {user?.role === "admin" && (
-        <>
-          <Link to="/admin/sellers">Verify Sellers / Manage Users</Link>{" "}
-        </>
-      )}
+        {!user && (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        )}
 
-      {user?.role === "seller" && (
-        <>
-          <Link to="/seller/add-product">Add Product</Link>{" "}
-          <Link to="/seller/stock">Manage Stock</Link>{" "}
-          <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
-          <Link to="/seller-wishlist">Wishlist Stats</Link>
-        </>
-      )}
+        {user?.role === "customer" && (
+          <>
+            <Link to="/cart">Cart</Link>
+            <Link to="/checkout">Checkout</Link>
+            <Link to="/wishlist">Wishlist</Link>
+            <Link to="/gift-card">Gift Card</Link>
+            <Link to="/customer/activity">My Activity</Link>
+          </>
+        )}
 
-      {user?.role === "customer" && (
-        <>
-          <Link to="/cart">Cart</Link>{" "}
-          <Link to="/checkout">Checkout</Link>{" "}
-          <Link to="/wishlist">Wishlist</Link>
-        </>
-      )}
+        {user?.role === "seller" && (
+          <>
+            <Link to="/seller/products">My Products</Link>
+            <Link to="/seller/add-product">Add Product</Link>
+            <Link to="/seller/stock">Stock</Link>
+            <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>
+            <Link to="/seller/wishlist-stats">Wishlist Stats</Link>
+          </>
+        )}
 
-      {user && (
-        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
-          Logout
-        </button>
-      )}
+        {user?.role === "admin" && (
+          <>
+            <Link to="/admin/seller-approval">Seller Approval</Link>
+          </>
+        )}
+
+        {user && (
+          <button type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        )}
+      </div>
     </nav>
   );
 };

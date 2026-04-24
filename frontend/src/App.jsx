@@ -1,19 +1,26 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+
 import AdminSellerApproval from "./pages/AdminSellerApproval";
+
 import SellerAddProduct from "./pages/SellerAddProduct";
+import SellerProducts from "./pages/SellerProduct";
 import SellerStock from "./pages/SellerStock";
-import SellerWishlistStats from "./pages/SellerWishlistStats"; 
+import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
+
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Wishlist from "./pages/Wishlist"; // (if customer wishlist exists)
+import Wishlist from "./pages/Wishlist";
+import CustomerActivityTabs from "./pages/CustomerActivityTabs";
+import GiftCard from "./pages/GiftCard";
 
 function App() {
   return (
@@ -21,15 +28,27 @@ function App() {
       <Navbar />
 
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* Admin Routes */}
         <Route
-          path="/admin/sellers"
+          path="/admin/seller-approval"
           element={
             <PrivateRoute role="admin">
               <AdminSellerApproval />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Seller Routes */}
+        <Route
+          path="/seller/products"
+          element={
+            <PrivateRoute role="seller">
+              <SellerProducts />
             </PrivateRoute>
           }
         />
@@ -52,9 +71,17 @@ function App() {
           }
         />
 
+        <Route
+          path="/seller/spoilage-alerts"
+          element={
+            <PrivateRoute role="seller">
+              <SellerSpoilageAlerts />
+            </PrivateRoute>
+          }
+        />
 
         <Route
-          path="/seller-wishlist"
+          path="/seller/wishlist-stats"
           element={
             <PrivateRoute role="seller">
               <SellerWishlistStats />
@@ -62,6 +89,24 @@ function App() {
           }
         />
 
+        {/* Customer Routes */}
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute role="customer">
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute role="customer">
+              <Checkout />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/wishlist"
@@ -73,28 +118,19 @@ function App() {
         />
 
         <Route
-          path="/cart"
+          path="/gift-card"
           element={
             <PrivateRoute role="customer">
-              <Cart />
+              <GiftCard />
             </PrivateRoute>
           }
         />
 
         <Route
-          path="/seller/spoilage-alerts"
-          element={
-            <PrivateRoute role="seller">
-              <SellerSpoilageAlerts />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/checkout"
+          path="/customer/activity"
           element={
             <PrivateRoute role="customer">
-              <Checkout />
+              <CustomerActivityTabs />
             </PrivateRoute>
           }
         />
