@@ -19,11 +19,6 @@ const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
 const app = express();
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
 app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());

@@ -63,7 +63,6 @@ const addProduct = async (req, res, next) => {
       description,
       lowStockThreshold,
       expiryDate,
-<<<<<<< HEAD
       originalPrice,
       discountPercentage,
       isDiscounted,
@@ -84,10 +83,6 @@ const addProduct = async (req, res, next) => {
       : 0;
 
     const hasDiscount = Boolean(isDiscounted) || Boolean(normalizedOriginalPrice);
-=======
-    } = req.body;
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
     const safeThreshold = Number(lowStockThreshold) || 5;
     const numericStock = Number(stock);
 
@@ -96,7 +91,7 @@ const addProduct = async (req, res, next) => {
     const product = await Product.create({
       name,
       category,
-      price,
+      price: numericPrice,
       stock: numericStock,
       description,
       lowStockThreshold: safeThreshold,
@@ -106,13 +101,9 @@ const addProduct = async (req, res, next) => {
       spoilageAlert: spoilageMeta.spoilageAlert,
       spoilageAlertDate: spoilageMeta.spoilageAlertDate,
       spoilageStatus: spoilageMeta.spoilageStatus,
-<<<<<<< HEAD
-      price: numericPrice,
       originalPrice: normalizedOriginalPrice,
       discountPercentage: hasDiscount ? normalizedDiscountPercentage : 0,
       isDiscounted: hasDiscount,
-=======
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
     });
 
     res.status(201).json({
@@ -123,7 +114,6 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 const getDiscountedProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
@@ -138,9 +128,6 @@ const getDiscountedProducts = async (req, res, next) => {
     next(error);
   }
 };
-=======
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
 const getAllProducts = async (req, res, next) => {
   try {
     const { search, category, minPrice, maxPrice, sort, inStock } = req.query;
@@ -281,8 +268,5 @@ module.exports = {
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
-<<<<<<< HEAD
   getDiscountedProducts,
-=======
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
 };

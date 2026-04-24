@@ -39,10 +39,6 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
     expiryDate: {
       type: Date,
       default: null,
@@ -60,7 +56,6 @@ const productSchema = new Schema(
       enum: ["fresh", "warning", "spoiled"],
       default: "fresh",
     },
-<<<<<<< HEAD
     originalPrice: {
       type: Number,
       min: 0,
@@ -76,25 +71,14 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
-=======
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
     wishlistCount: {
       type: Number,
       default: 0,
     },
-<<<<<<< HEAD
     averageRating: {
       type: Number,
       default: 0,
     },
-=======
-        averageRating: {
-      type: Number,
-      default: 0,
-    },
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
     reviewCount: {
       type: Number,
       default: 0,

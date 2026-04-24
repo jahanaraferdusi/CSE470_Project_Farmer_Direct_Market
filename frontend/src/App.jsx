@@ -9,20 +9,12 @@ import Register from "./pages/Register";
 import AdminSellerApproval from "./pages/AdminSellerApproval";
 import SellerAddProduct from "./pages/SellerAddProduct";
 import SellerStock from "./pages/SellerStock";
-<<<<<<< HEAD
 import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
-=======
-import SellerWishlistStats from "./pages/SellerWishlistStats"; 
-import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Wishlist from "./pages/Wishlist"; // (if customer wishlist exists)
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
 import HarvestCalendar from "./pages/HarvestCalendar";
 import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
 import ProductReview from "./pages/ProductReview";
@@ -66,10 +58,6 @@ function App() {
           }
         />
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
         <Route
           path="/seller-wishlist"
           element={
@@ -79,10 +67,6 @@ function App() {
           }
         />
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
         <Route
           path="/wishlist"
           element={
@@ -111,7 +95,6 @@ function App() {
         />
 
         <Route
-<<<<<<< HEAD
           path="/customer/activity"
           element={
             <PrivateRoute role="customer">
@@ -121,8 +104,6 @@ function App() {
         />
 
         <Route
-=======
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
           path="/checkout"
           element={
             <PrivateRoute role="customer">
@@ -130,7 +111,6 @@ function App() {
             </PrivateRoute>
           }
         />
-<<<<<<< HEAD
 
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
 
@@ -169,41 +149,6 @@ function App() {
             </PrivateRoute>
           }
         />
-=======
-        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
-        <Route
-           path="/seller/harvest-calendar"
-               element={
-            <PrivateRoute role="seller">
-                <SellerHarvestCalendar />
-            </PrivateRoute>
-                        }
-        />
-        <Route
-           path="/reviews/:productId"
-           element={
-             <PrivateRoute role="customer">
-               <ProductReview />
-             </PrivateRoute>
-                    } />
-        <Route
-            path="/seller/reviews"
-            element={
-              <PrivateRoute role="seller">
-                <SellerProductReviews />
-              </PrivateRoute>
-            }
-        />
-        <Route
-             path="/chat"
-             element={
-               <PrivateRoute allowedRoles={["customer", "seller"]}>
-                 <Chat />
-               </PrivateRoute>
-             }
-        />
-
->>>>>>> fb62d7f298be7aa7d970834080bbe89182acfd69
       </Routes>
     </BrowserRouter>
   );
