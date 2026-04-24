@@ -14,6 +14,11 @@ import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist"; // (if customer wishlist exists)
+import HarvestCalendar from "./pages/HarvestCalendar";
+import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
+import ProductReview from "./pages/ProductReview";
+import SellerProductReviews from "./pages/SellerProductReviews";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -98,6 +103,39 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
+        <Route
+           path="/seller/harvest-calendar"
+               element={
+            <PrivateRoute role="seller">
+                <SellerHarvestCalendar />
+            </PrivateRoute>
+                        }
+        />
+        <Route
+           path="/reviews/:productId"
+           element={
+             <PrivateRoute role="customer">
+               <ProductReview />
+             </PrivateRoute>
+                    } />
+        <Route
+            path="/seller/reviews"
+            element={
+              <PrivateRoute role="seller">
+                <SellerProductReviews />
+              </PrivateRoute>
+            }
+        />
+        <Route
+             path="/chat"
+             element={
+               <PrivateRoute allowedRoles={["customer", "seller"]}>
+                 <Chat />
+               </PrivateRoute>
+             }
+        />
+
       </Routes>
     </BrowserRouter>
   );

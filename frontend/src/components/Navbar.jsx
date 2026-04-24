@@ -14,6 +14,7 @@ const Navbar = () => {
   return (
     <nav style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
       <Link to="/">Home</Link>{" "}
+      <Link to="/harvest-calendar">Harvest Calendar</Link>{" "}
 
       {!user && (
         <>
@@ -34,6 +35,8 @@ const Navbar = () => {
           <Link to="/seller/stock">Manage Stock</Link>{" "}
           <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
           <Link to="/seller-wishlist">Wishlist Stats</Link>
+          <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
+          <Link to="/seller/reviews">Product Reviews</Link>
         </>
       )}
 
@@ -50,6 +53,9 @@ const Navbar = () => {
           Logout
         </button>
       )}
+      {(user?.role === "customer" || user?.role === "seller") && (
+      <Link to="/chat">Chat</Link>
+     )}
     </nav>
   );
 };

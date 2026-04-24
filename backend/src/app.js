@@ -11,6 +11,9 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes.js");
 const seedRoutes = require("./routes/seedRoutes");
+const harvestCalendarRoutes = require("./routes/harvestCalendarRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
@@ -38,7 +41,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/harvest-calendar", harvestCalendarRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use("/api/seed", seedRoutes);
+app.use("/api/chats", chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
