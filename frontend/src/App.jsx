@@ -21,6 +21,9 @@ import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
+import HarvestCalendar from "./pages/HarvestCalendar";
+import Chat from "./pages/Chat";
+import ProductReview from "./pages/ProductReview";
 
 function App() {
   return (
@@ -131,6 +134,25 @@ function App() {
           element={
             <PrivateRoute role="customer">
               <CustomerActivityTabs />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
+
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/products/:productId/reviews"
+          element={
+            <PrivateRoute role="customer">
+              <ProductReview />
             </PrivateRoute>
           }
         />

@@ -19,6 +19,7 @@ const Navbar = () => {
 
       <div className="navbar-links">
         <Link to="/">Home</Link>
+        <Link to="/harvest-calendar">Harvest Calendar</Link>
 
         {!user && (
           <>
@@ -34,6 +35,7 @@ const Navbar = () => {
             <Link to="/wishlist">Wishlist</Link>
             <Link to="/gift-card">Gift Card</Link>
             <Link to="/customer/activity">My Activity</Link>
+            <Link to="/chat">Chat</Link>
           </>
         )}
 
@@ -44,6 +46,7 @@ const Navbar = () => {
             <Link to="/seller/stock">Stock</Link>
             <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>
             <Link to="/seller/wishlist-stats">Wishlist Stats</Link>
+            <Link to="/chat">Chats</Link>
           </>
         )}
 

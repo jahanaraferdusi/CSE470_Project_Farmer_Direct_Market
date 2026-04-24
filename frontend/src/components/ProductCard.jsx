@@ -6,6 +6,7 @@ const ProductCard = ({ product, onAddToCart }) => {
   const [wished, setWished] = useState(false);
 
   const userId = localStorage.getItem("userId");
+  const isOutOfStock = product.stock <= 0;
 
   const handleAddToWishlist = async () => {
     if (!userId) {
@@ -34,8 +35,6 @@ const ProductCard = ({ product, onAddToCart }) => {
     }
   };
 
-  const isOutOfStock = product.stock <= 0;
-
   return (
     <div className="product-card">
       <div
@@ -57,8 +56,16 @@ const ProductCard = ({ product, onAddToCart }) => {
         {product.name}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "12px" }}>
-        <h3 style={{ margin: "0 0 8px", color: "#245c2f" }}>{product.name}</h3>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "12px",
+        }}
+      >
+        <h3 style={{ margin: "0 0 8px", color: "#245c2f" }}>
+          {product.name}
+        </h3>
 
         <span
           style={{
@@ -87,7 +94,13 @@ const ProductCard = ({ product, onAddToCart }) => {
       )}
 
       <div style={{ margin: "14px 0" }}>
-        <span style={{ fontSize: "22px", fontWeight: "800", color: "#245c2f" }}>
+        <span
+          style={{
+            fontSize: "22px",
+            fontWeight: "800",
+            color: "#245c2f",
+          }}
+        >
           ৳ {product.price}
         </span>
 
@@ -116,6 +129,15 @@ const ProductCard = ({ product, onAddToCart }) => {
           </>
         ) : null}
       </div>
+
+      {product.averageRating !== undefined && (
+        <p style={{ margin: "8px 0", color: "#607064" }}>
+          <strong>Rating:</strong>{" "}
+          {product.averageRating > 0
+            ? `${product.averageRating} ⭐ (${product.reviewCount || 0})`
+            : "No reviews yet"}
+        </p>
+      )}
 
       <p style={{ margin: "8px 0 16px", color: "#607064" }}>
         <strong>Available Stock:</strong> {product.stock}
@@ -152,6 +174,18 @@ const ProductCard = ({ product, onAddToCart }) => {
             : "❤️ Add to Wishlist"}
         </button>
       )}
+
+      <a
+        href={`/products/${product._id}/reviews`}
+        className="secondary-btn"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "10px",
+        }}
+      >
+        Reviews
+      </a>
     </div>
   );
 };
