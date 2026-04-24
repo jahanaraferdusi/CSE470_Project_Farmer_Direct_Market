@@ -56,9 +56,20 @@ const checkout = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }};
+const getMyOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ customer: req.user._id })
+      .populate("items.product", "name category")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    next(error);
   }
 };
 
 module.exports = {
   checkout,
+  getMyOrders,
 };

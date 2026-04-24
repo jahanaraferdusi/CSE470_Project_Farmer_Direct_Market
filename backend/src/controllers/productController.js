@@ -63,8 +63,26 @@ const addProduct = async (req, res, next) => {
       description,
       lowStockThreshold,
       expiryDate,
+      originalPrice,
+      discountPercentage,
+      isDiscounted,
     } = req.body;
+    const numericPrice = Number(price);
+    const numericOriginalPrice = originalPrice ? Number(originalPrice) : null;
 
+    const normalizedOriginalPrice =
+      numericOriginalPrice && numericOriginalPrice > numericPrice
+        ? numericOriginalPrice
+        : null;
+
+    const normalizedDiscountPercentage = normalizedOriginalPrice
+      ? Number(
+          discountPercentage ||
+            (((normalizedOriginalPrice - numericPrice) / normalizedOriginalPrice) * 100).toFixed(2)
+        )
+      : 0;
+
+    const hasDiscount = Boolean(isDiscounted) || Boolean(normalizedOriginalPrice);
     const safeThreshold = Number(lowStockThreshold) || 5;
     const numericStock = Number(stock);
 
@@ -73,7 +91,7 @@ const addProduct = async (req, res, next) => {
     const product = await Product.create({
       name,
       category,
-      price,
+      price: numericPrice,
       stock: numericStock,
       description,
       lowStockThreshold: safeThreshold,
@@ -83,6 +101,9 @@ const addProduct = async (req, res, next) => {
       spoilageAlert: spoilageMeta.spoilageAlert,
       spoilageAlertDate: spoilageMeta.spoilageAlertDate,
       spoilageStatus: spoilageMeta.spoilageStatus,
+      originalPrice: normalizedOriginalPrice,
+      discountPercentage: hasDiscount ? normalizedDiscountPercentage : 0,
+      isDiscounted: hasDiscount,
     });
 
     res.status(201).json({
@@ -93,7 +114,20 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
+const getDiscountedProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find({
+      isDiscounted: true,
+      stock: { $gt: 0 },
+    })
+      .populate("seller", "name email")
+      .sort({ discountPercentage: -1, createdAt: -1 });
 
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
+};
 const getAllProducts = async (req, res, next) => {
   try {
     const { search, category, minPrice, maxPrice, sort, inStock } = req.query;
@@ -234,4 +268,5 @@ module.exports = {
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
+  getDiscountedProducts,
 };
