@@ -1,0 +1,39 @@
+const express = require("express");
+const { isLoggedIn } = require("../middlewares/authMiddleware");
+const authorizeRoles = require("../middlewares/roleMiddleware");
+
+const {
+  addProduct,
+  getAllProducts,
+  updateStock,
+  getSellerProducts,
+  getSellerSpoilageAlerts,
+} = require("../controllers/productController");
+
+const router = express.Router();
+
+router.get("/", getAllProducts);
+
+// seller spoilage alerts
+router.get(
+  "/seller/spoilage-alerts",
+  isLoggedIn,
+  authorizeRoles("seller"),
+  getSellerSpoilageAlerts
+);
+
+// seller views own products
+router.get(
+  "/seller/:sellerId",
+  isLoggedIn,
+  authorizeRoles("seller"),
+  getSellerProducts
+);
+
+// seller adds product
+router.post("/", isLoggedIn, authorizeRoles("seller"), addProduct);
+
+// seller updates stock and expiry
+router.put("/:productId/stock", isLoggedIn, authorizeRoles("seller"), updateStock);
+
+module.exports = router;
