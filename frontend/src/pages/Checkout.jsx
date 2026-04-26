@@ -31,13 +31,11 @@ const Checkout = () => {
       await API.post("/orders/checkout", form);
 
       setMessage("Checkout successful. Redirecting to cart...");
+
       setForm({
         shippingAddress: "",
         paymentMethod: "Cash on Delivery",
-<<<<<<< HEAD
-=======
         deliverySlot: "",
->>>>>>> Debjyoti-Acherjee
       });
 
       setTimeout(() => {
@@ -55,12 +53,8 @@ const Checkout = () => {
       <div className="page-header">
         <h1 className="page-title">Checkout</h1>
         <p className="page-subtitle">
-<<<<<<< HEAD
-          Confirm your delivery information and place your order.
-=======
           Confirm your delivery information and choose your preferred delivery
           time.
->>>>>>> Debjyoti-Acherjee
         </p>
       </div>
 
@@ -94,8 +88,6 @@ const Checkout = () => {
           </div>
 
           <div className="form-group">
-<<<<<<< HEAD
-=======
             <label className="form-label">Delivery Slot</label>
             <select
               className="form-select"
@@ -115,7 +107,6 @@ const Checkout = () => {
           </div>
 
           <div className="form-group">
->>>>>>> Debjyoti-Acherjee
             <label className="form-label">Payment Method</label>
             <select
               className="form-select"
@@ -129,13 +120,8 @@ const Checkout = () => {
           </div>
 
           <div className="info-box">
-<<<<<<< HEAD
-            <strong>Note:</strong> Your order will be placed using the items
-            currently in your cart.
-=======
             <strong>Note:</strong> Your selected delivery slot will be visible
             to the seller and admin.
->>>>>>> Debjyoti-Acherjee
           </div>
 
           <button type="submit" className="primary-btn" disabled={loading}>

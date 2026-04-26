@@ -16,6 +16,7 @@ const harvestCalendarRoutes = require("./routes/harvestCalendarRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
+const pollRoutes = require("./routes/pollRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
@@ -45,6 +46,7 @@ app.use("/api/harvest-calendar", harvestCalendarRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/gift-cards", giftCardRoutes);
+app.use("/api/polls", pollRoutes);
 app.use("/api/seed", seedRoutes);
 
 app.use(notFound);

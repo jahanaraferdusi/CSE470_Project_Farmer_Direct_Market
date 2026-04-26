@@ -15,19 +15,19 @@ import SellerProducts from "./pages/SellerProduct";
 import SellerStock from "./pages/SellerStock";
 import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
+import SellerPolls from "./pages/SellerPolls";
 
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
+import CustomerPolls from "./pages/CustomerPolls";
+
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
-<<<<<<< HEAD
 import ProductReview from "./pages/ProductReview";
-=======
 import DeliverySlots from "./pages/DeliverySlots";
->>>>>>> Debjyoti-Acherjee
 
 function App() {
   return (
@@ -39,6 +39,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
 
         {/* Admin Routes */}
         <Route
@@ -46,6 +47,15 @@ function App() {
           element={
             <PrivateRoute role="admin">
               <AdminSellerApproval />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin/delivery-slots"
+          element={
+            <PrivateRoute role="admin">
+              <DeliverySlots role="admin" />
             </PrivateRoute>
           }
         />
@@ -96,6 +106,24 @@ function App() {
           }
         />
 
+        <Route
+          path="/seller/delivery-slots"
+          element={
+            <PrivateRoute role="seller">
+              <DeliverySlots role="seller" />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/polls"
+          element={
+            <PrivateRoute role="seller">
+              <SellerPolls />
+            </PrivateRoute>
+          }
+        />
+
         {/* Customer Routes */}
         <Route
           path="/cart"
@@ -121,7 +149,6 @@ function App() {
             <PrivateRoute role="customer">
               <Wishlist />
             </PrivateRoute>
-<<<<<<< HEAD
           }
         />
 
@@ -142,16 +169,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
-
-        <Route
-          path="/chat"
-          element={
-            <PrivateRoute>
-              <Chat />
-            </PrivateRoute>
-          }
-        />
 
         <Route
           path="/products/:productId/reviews"
@@ -161,54 +178,26 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/polls"
+          element={
+            <PrivateRoute role="customer">
+              <CustomerPolls />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Chat Route */}
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute allowedRoles={["customer", "seller"]}>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
       </Routes>
-=======
-                        }
-        />
-        <Route
-           path="/reviews/:productId"
-           element={
-             <PrivateRoute role="customer">
-               <ProductReview />
-             </PrivateRoute>
-                    } />
-        <Route
-            path="/seller/reviews"
-            element={
-              <PrivateRoute role="seller">
-                <SellerProductReviews />
-              </PrivateRoute>
-            }
-        />
-<Route
-  path="/chat"
-  element={
-    <PrivateRoute allowedRoles={["customer", "seller"]}>
-      <Chat />
-    </PrivateRoute>
-  }
-/>
-
-<Route
-  path="/seller/delivery-slots"
-  element={
-    <PrivateRoute role="seller">
-      <DeliverySlots role="seller" />
-    </PrivateRoute>
-  }
-/>
-
-<Route
-  path="/admin/delivery-slots"
-  element={
-    <PrivateRoute role="admin">
-      <DeliverySlots role="admin" />
-    </PrivateRoute>
-  }
-/>
-
-</Routes>
->>>>>>> Debjyoti-Acherjee
     </BrowserRouter>
   );
 }
