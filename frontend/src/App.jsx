@@ -23,7 +23,11 @@ import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
+<<<<<<< HEAD
 import ProductReview from "./pages/ProductReview";
+=======
+import DeliverySlots from "./pages/DeliverySlots";
+>>>>>>> Debjyoti-Acherjee
 
 function App() {
   return (
@@ -117,6 +121,7 @@ function App() {
             <PrivateRoute role="customer">
               <Wishlist />
             </PrivateRoute>
+<<<<<<< HEAD
           }
         />
 
@@ -157,6 +162,53 @@ function App() {
           }
         />
       </Routes>
+=======
+                        }
+        />
+        <Route
+           path="/reviews/:productId"
+           element={
+             <PrivateRoute role="customer">
+               <ProductReview />
+             </PrivateRoute>
+                    } />
+        <Route
+            path="/seller/reviews"
+            element={
+              <PrivateRoute role="seller">
+                <SellerProductReviews />
+              </PrivateRoute>
+            }
+        />
+<Route
+  path="/chat"
+  element={
+    <PrivateRoute allowedRoles={["customer", "seller"]}>
+      <Chat />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/seller/delivery-slots"
+  element={
+    <PrivateRoute role="seller">
+      <DeliverySlots role="seller" />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/admin/delivery-slots"
+  element={
+    <PrivateRoute role="admin">
+      <DeliverySlots role="admin" />
+    </PrivateRoute>
+  }
+/>
+
+</Routes>
+>>>>>>> Debjyoti-Acherjee
     </BrowserRouter>
   );
 }

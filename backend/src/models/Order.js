@@ -40,11 +40,22 @@ const orderSchema = new Schema(
       type: String,
       default: "Cash on Delivery",
     },
-    shippingAddress: {
-      type: String,
-      required: true,
-    },
-    status: {
+shippingAddress: {
+  type: String,
+  required: true,
+},
+deliverySlot: {
+  type: String,
+  enum: [
+    "08:00 AM - 11:00 AM",
+    "11:00 AM - 02:00 PM",
+    "02:00 PM - 05:00 PM",
+    "05:00 PM - 08:00 PM",
+    "08:00 PM - 11:00 PM",
+  ],
+  required: true,
+},
+status: {
       type: String,
       enum: ["Pending", "Confirmed", "Delivered", "Cancelled"],
       default: "Pending",

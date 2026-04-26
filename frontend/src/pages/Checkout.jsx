@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
+const deliverySlots = [
+  "08:00 AM - 11:00 AM",
+  "11:00 AM - 02:00 PM",
+  "02:00 PM - 05:00 PM",
+  "05:00 PM - 08:00 PM",
+  "08:00 PM - 11:00 PM",
+];
+
 const Checkout = () => {
   const [form, setForm] = useState({
     shippingAddress: "",
     paymentMethod: "Cash on Delivery",
+    deliverySlot: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,6 +34,10 @@ const Checkout = () => {
       setForm({
         shippingAddress: "",
         paymentMethod: "Cash on Delivery",
+<<<<<<< HEAD
+=======
+        deliverySlot: "",
+>>>>>>> Debjyoti-Acherjee
       });
 
       setTimeout(() => {
@@ -42,7 +55,12 @@ const Checkout = () => {
       <div className="page-header">
         <h1 className="page-title">Checkout</h1>
         <p className="page-subtitle">
+<<<<<<< HEAD
           Confirm your delivery information and place your order.
+=======
+          Confirm your delivery information and choose your preferred delivery
+          time.
+>>>>>>> Debjyoti-Acherjee
         </p>
       </div>
 
@@ -76,6 +94,28 @@ const Checkout = () => {
           </div>
 
           <div className="form-group">
+<<<<<<< HEAD
+=======
+            <label className="form-label">Delivery Slot</label>
+            <select
+              className="form-select"
+              value={form.deliverySlot}
+              onChange={(e) =>
+                setForm({ ...form, deliverySlot: e.target.value })
+              }
+              required
+            >
+              <option value="">Select delivery slot</option>
+              {deliverySlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+>>>>>>> Debjyoti-Acherjee
             <label className="form-label">Payment Method</label>
             <select
               className="form-select"
@@ -89,8 +129,13 @@ const Checkout = () => {
           </div>
 
           <div className="info-box">
+<<<<<<< HEAD
             <strong>Note:</strong> Your order will be placed using the items
             currently in your cart.
+=======
+            <strong>Note:</strong> Your selected delivery slot will be visible
+            to the seller and admin.
+>>>>>>> Debjyoti-Acherjee
           </div>
 
           <button type="submit" className="primary-btn" disabled={loading}>

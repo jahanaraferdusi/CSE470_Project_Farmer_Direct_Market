@@ -21,6 +21,7 @@ const Navbar = () => {
         <Link to="/">Home</Link>
         <Link to="/harvest-calendar">Harvest Calendar</Link>
 
+<<<<<<< HEAD
         {!user && (
           <>
             <Link to="/login">Login</Link>
@@ -38,6 +39,25 @@ const Navbar = () => {
             <Link to="/chat">Chat</Link>
           </>
         )}
+{user?.role === "admin" && (
+  <>
+    <Link to="/admin/sellers">Verify Sellers / Manage Users</Link>{" "}
+    <Link to="/admin/delivery-slots">Delivery Slots</Link>{" "}
+  </>
+)}
+
+{user?.role === "seller" && (
+  <>
+    <Link to="/seller/add-product">Add Product</Link>{" "}
+    <Link to="/seller/stock">Manage Stock</Link>{" "}
+    <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
+    <Link to="/seller-wishlist">Wishlist Stats</Link>{" "}
+    <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>{" "}
+    <Link to="/seller/reviews">Product Reviews</Link>{" "}
+    <Link to="/seller/delivery-slots">Delivery Slots</Link>{" "}
+  </>
+)}
+>>>>>>> Debjyoti-Acherjee
 
         {user?.role === "seller" && (
           <>
