@@ -173,14 +173,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/products/:productId/reviews"
-          element={
-            <PrivateRoute role="customer">
-              <ProductReview />
-            </PrivateRoute>
-          }
-        />
+<Route path="/products/:productId/reviews" element={<ProductReview />} />
 
         <Route
           path="/polls"

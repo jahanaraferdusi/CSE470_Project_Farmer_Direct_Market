@@ -1,7 +1,9 @@
 const express = require("express");
+
 const {
   addOrUpdateReview,
   getProductReviews,
+  replyToReview,
   deleteReview,
   getSellerProductReviews,
 } = require("../controllers/reviewController");
@@ -10,6 +12,8 @@ const { isLoggedIn, authorizeRoles } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
+router.get("/product/:productId", getProductReviews);
+
 router.post(
   "/:productId",
   isLoggedIn,
@@ -17,7 +21,12 @@ router.post(
   addOrUpdateReview
 );
 
-router.get("/product/:productId", getProductReviews);
+router.put(
+  "/:reviewId/reply",
+  isLoggedIn,
+  authorizeRoles("seller"),
+  replyToReview
+);
 
 router.get(
   "/seller/my-products",
