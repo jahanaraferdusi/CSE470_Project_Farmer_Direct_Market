@@ -39,6 +39,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Public Harvest Calendar route.
+            Admin, seller, customer, and outsider can all see this page. */}
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
 
         {/* Admin Routes */}
