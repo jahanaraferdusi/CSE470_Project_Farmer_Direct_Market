@@ -19,6 +19,7 @@ import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
 import ProductReview from "./pages/ProductReview";
 import SellerProductReviews from "./pages/SellerProductReviews";
 import Chat from "./pages/Chat";
+import DeliverySlots from "./pages/DeliverySlots";
 
 function App() {
   return (
@@ -127,16 +128,34 @@ function App() {
               </PrivateRoute>
             }
         />
-        <Route
-             path="/chat"
-             element={
-               <PrivateRoute allowedRoles={["customer", "seller"]}>
-                 <Chat />
-               </PrivateRoute>
-             }
-        />
+<Route
+  path="/chat"
+  element={
+    <PrivateRoute allowedRoles={["customer", "seller"]}>
+      <Chat />
+    </PrivateRoute>
+  }
+/>
 
-      </Routes>
+<Route
+  path="/seller/delivery-slots"
+  element={
+    <PrivateRoute role="seller">
+      <DeliverySlots role="seller" />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/admin/delivery-slots"
+  element={
+    <PrivateRoute role="admin">
+      <DeliverySlots role="admin" />
+    </PrivateRoute>
+  }
+/>
+
+</Routes>
     </BrowserRouter>
   );
 }
