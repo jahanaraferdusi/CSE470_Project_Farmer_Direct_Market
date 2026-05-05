@@ -43,16 +43,21 @@ const getSpoilageMeta = (expiryDate) => {
   };
 };
 
+// ✅ Seller: add product
 const addProduct = async (req, res, next) => {
   try {
     const seller = await User.findById(req.user._id);
 
     if (!seller || seller.role !== "seller") {
-      return res.status(403).json({ message: "Only sellers can add products" });
+      return res.status(403).json({
+        message: "Only sellers can add products",
+      });
     }
 
     if (!seller.sellerVerified) {
-      return res.status(403).json({ message: "Seller is not verified yet" });
+      return res.status(403).json({
+        message: "Seller is not verified yet",
+      });
     }
 
     const {
@@ -67,11 +72,9 @@ const addProduct = async (req, res, next) => {
       discountPercentage,
       isDiscounted,
     } = req.body;
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
     const numericPrice = Number(price);
+    const numericStock = Number(stock);
     const numericOriginalPrice = originalPrice ? Number(originalPrice) : null;
 
     const normalizedOriginalPrice =
@@ -82,21 +85,16 @@ const addProduct = async (req, res, next) => {
     const normalizedDiscountPercentage = normalizedOriginalPrice
       ? Number(
           discountPercentage ||
-<<<<<<< HEAD
             (
               ((normalizedOriginalPrice - numericPrice) /
                 normalizedOriginalPrice) *
               100
             ).toFixed(2)
-=======
-            (((normalizedOriginalPrice - numericPrice) / normalizedOriginalPrice) * 100).toFixed(2)
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         )
       : 0;
 
     const hasDiscount = Boolean(isDiscounted) || Boolean(normalizedOriginalPrice);
     const safeThreshold = Number(lowStockThreshold) || 5;
-    const numericStock = Number(stock);
 
     const spoilageMeta = getSpoilageMeta(expiryDate);
 
@@ -126,10 +124,8 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
+// ✅ Public: discounted products
 const getDiscountedProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
@@ -144,10 +140,8 @@ const getDiscountedProducts = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
+// ✅ Public: all products
 const getAllProducts = async (req, res, next) => {
   try {
     const { search, category, minPrice, maxPrice, sort, inStock } = req.query;
@@ -197,13 +191,14 @@ const getAllProducts = async (req, res, next) => {
     }
 
     const products = await productQuery;
+
     res.status(200).json(products);
   } catch (error) {
     next(error);
   }
 };
 
-<<<<<<< HEAD
+// ✅ Public/customer: single product details
 const getProductById = async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -214,7 +209,9 @@ const getProductById = async (req, res, next) => {
     );
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({
+        message: "Product not found",
+      });
     }
 
     res.status(200).json(product);
@@ -223,8 +220,7 @@ const getProductById = async (req, res, next) => {
   }
 };
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
+// ✅ Seller: update stock and expiry
 const updateStock = async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -233,13 +229,15 @@ const updateStock = async (req, res, next) => {
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({
+        message: "Product not found",
+      });
     }
 
     if (product.seller.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ message: "You can update only your own product stock" });
+      return res.status(403).json({
+        message: "You can update only your own product stock",
+      });
     }
 
     if (stock !== undefined) {
@@ -268,14 +266,15 @@ const updateStock = async (req, res, next) => {
   }
 };
 
+// ✅ Seller: get own products
 const getSellerProducts = async (req, res, next) => {
   try {
     const { sellerId } = req.params;
 
     if (req.user._id.toString() !== sellerId.toString()) {
-      return res
-        .status(403)
-        .json({ message: "You can view only your own products" });
+      return res.status(403).json({
+        message: "You can view only your own products",
+      });
     }
 
     const products = await Product.find({ seller: sellerId }).sort({
@@ -288,6 +287,7 @@ const getSellerProducts = async (req, res, next) => {
   }
 };
 
+// ✅ Seller: spoilage alerts
 const getSellerSpoilageAlerts = async (req, res, next) => {
   try {
     const products = await Product.find({
@@ -307,16 +307,9 @@ const getSellerSpoilageAlerts = async (req, res, next) => {
 module.exports = {
   addProduct,
   getAllProducts,
-<<<<<<< HEAD
   getProductById,
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
   getDiscountedProducts,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40

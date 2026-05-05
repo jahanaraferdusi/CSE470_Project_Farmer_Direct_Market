@@ -1,4 +1,5 @@
 const path = require("path");
+
 require("dotenv").config({
   path: path.join(__dirname, "../.env"),
 });
@@ -14,8 +15,4 @@ module.exports = {
   mongodburl,
   jwtSecret,
   defaultimagePath,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40

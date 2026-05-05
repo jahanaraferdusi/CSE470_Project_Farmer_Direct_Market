@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
 
@@ -12,36 +11,10 @@ const Compare = () => {
       setProducts(res.data || []);
     } catch (err) {
       setMessage(err.response?.data?.message || "Failed to load compare list.");
-=======
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
-
-const Compare = () => {
-  const [products, setProducts] = useState([]);
-  const { user } = useContext(AuthContext); // ✅ logged-in user
-
-  useEffect(() => {
-    if (user?._id) {
-      fetchCompare();
-    }
-  }, [user]);
-
-  const fetchCompare = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/compare/${user._id}`
-      );
-
-      setProducts(res.data || []);
-    } catch (err) {
-      console.error("Compare fetch error:", err);
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
       setProducts([]);
     }
   };
 
-<<<<<<< HEAD
   useEffect(() => {
     fetchCompare();
   }, []);
@@ -49,20 +22,10 @@ const Compare = () => {
   const removeProduct = async (productId) => {
     try {
       const res = await API.post("/compare/remove", { productId });
-      setProducts(res.data.products || []);
+      setProducts(res.data || []);
       setMessage("Product removed from compare.");
     } catch (err) {
       setMessage(err.response?.data?.message || "Failed to remove product.");
-    }
-  };
-
-  const clearCompare = async () => {
-    try {
-      await API.delete("/compare/clear");
-      setProducts([]);
-      setMessage("Compare list cleared.");
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Failed to clear compare list.");
     }
   };
 
@@ -71,15 +34,16 @@ const Compare = () => {
       <div className="page-header">
         <h1 className="page-title">Compare Products</h1>
         <p className="page-subtitle">
-          Compare price and product details side by side. Maximum 3 products can
-          be compared at once.
+          Compare price and product details side by side.
         </p>
       </div>
 
       {message && (
         <div
           className={
-            message.toLowerCase().includes("failed") ? "error-box" : "success-box"
+            message.toLowerCase().includes("failed")
+              ? "error-box"
+              : "success-box"
           }
         >
           {message}
@@ -90,21 +54,7 @@ const Compare = () => {
         <div className="empty-state">No products added to compare.</div>
       ) : (
         <div className="page-card">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: "12px",
-              flexWrap: "wrap",
-              marginBottom: "18px",
-            }}
-          >
-            <h2 className="card-title">Selected Products ({products.length}/3)</h2>
-
-            <button type="button" className="danger-btn" onClick={clearCompare}>
-              Clear Compare
-            </button>
-          </div>
+          <h2 className="card-title">Selected Products ({products.length}/3)</h2>
 
           <div
             style={{
@@ -123,24 +73,6 @@ const Compare = () => {
                   background: "#ffffff",
                 }}
               >
-                <div
-                  style={{
-                    minHeight: "110px",
-                    background: "#f3f8ef",
-                    borderRadius: "14px",
-                    marginBottom: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#245c2f",
-                    fontWeight: "800",
-                    textAlign: "center",
-                    padding: "12px",
-                  }}
-                >
-                  {product.name}
-                </div>
-
                 <h3 style={{ color: "#245c2f", marginTop: 0 }}>
                   {product.name}
                 </h3>
@@ -162,13 +94,6 @@ const Compare = () => {
                 </p>
 
                 <p>
-                  <strong>Expiry:</strong>{" "}
-                  {product.expiryDate
-                    ? new Date(product.expiryDate).toLocaleDateString()
-                    : "N/A"}
-                </p>
-
-                <p>
                   <strong>Seller:</strong> {product.seller?.name || "N/A"}
                 </p>
 
@@ -184,40 +109,6 @@ const Compare = () => {
             ))}
           </div>
         </div>
-=======
-  if (!user) {
-    return <p>Please login to see comparison.</p>;
-  }
-
-  return (
-    <div style={{ padding: "20px" }}>
-      <h2>Compare Products</h2>
-
-      {products.length === 0 ? (
-        <p>No products to compare</p>
-      ) : (
-        <table border="1" cellPadding="10">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Discount</th>
-              <th>Final Price</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {products.map((p, i) => (
-              <tr key={i}>
-                <td>{p.name}</td>
-                <td>{p.price}</td>
-                <td>{p.discount}</td>
-                <td>{p.finalPrice}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
       )}
     </div>
   );

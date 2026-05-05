@@ -8,6 +8,7 @@ const userSchema = new Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -15,33 +16,55 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+
     password: {
       type: String,
       required: true,
       set: (v) => bcrypt.hashSync(v, 10),
     },
+
     role: {
       type: String,
       enum: ["admin", "seller", "customer"],
       default: "customer",
     },
+
     sellerVerified: {
       type: Boolean,
       default: false,
     },
+
     isBanned: {
       type: Boolean,
       default: false,
     },
-<<<<<<< HEAD
-    
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-    referralCode: { type: String, unique: true },
-    hasReferred: { type: Boolean, default: false }, // can refer only once
-    referredBy: { type: String, default: null }, // store code used
-    walletDiscount: { type: Number, default: 0 }, // saved discount %
-    usedReferral: { type: Boolean, default: false } // one-time usage
+
+    // ✅ Referral system
+    referralCode: {
+      type: String,
+      unique: true,
+    },
+
+    hasReferred: {
+      type: Boolean,
+      default: false,
+    },
+
+    referredBy: {
+      type: String,
+      default: null,
+    },
+
+    // ✅ Wallet system
+    walletDiscount: {
+      type: Number,
+      default: 0,
+    },
+
+    usedReferral: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
