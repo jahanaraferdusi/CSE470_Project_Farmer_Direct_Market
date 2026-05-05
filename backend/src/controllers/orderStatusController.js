@@ -1,22 +1,38 @@
 const OrderStatusTracker = require("../models/OrderStatusTracker");
 
+// ✅ Allowed statuses
+const allowedStatuses = [
+  "Pending",
+  "Confirmed",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+];
+
 // ✅ Update Status
 const updateStatus = async (req, res) => {
   try {
-    const { orderId, status } = req.body;
+    const { orderId } = req.params;
+    const { status } = req.body;
 
     if (!orderId || !status) {
       return res.status(400).json({
-        message: "orderId and status required"
+        message: "orderId and status are required",
       });
     }
 
-    let tracker = await OrderStatusTracker.findOne({ orderId });
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status value",
+      });
+    }
+
+    const tracker = await OrderStatusTracker.findOne({ orderId });
 
     if (!tracker) {
-      tracker = new OrderStatusTracker({
-        orderId,
-        statusHistory: []
+      return res.status(404).json({
+        message: "Order tracker not found",
       });
     }
 
@@ -24,7 +40,7 @@ const updateStatus = async (req, res) => {
 
     tracker.statusHistory.push({
       status,
-      date: new Date()
+      date: new Date(),
     });
 
     tracker.updatedAt = new Date();
@@ -33,7 +49,7 @@ const updateStatus = async (req, res) => {
 
     res.json({
       success: true,
-      tracker
+      tracker,
     });
   } catch (err) {
     console.error(err);
@@ -44,22 +60,20 @@ const updateStatus = async (req, res) => {
 // ✅ Get Status
 const getStatus = async (req, res) => {
   try {
-    const tracker = await OrderStatusTracker.findOne({
-      orderId: req.params.orderId
-    });
+    const { orderId } = req.params;
 
-    // ⭐ IMPORTANT FIX
+    const tracker = await OrderStatusTracker.findOne({ orderId });
+
     if (!tracker) {
       return res.status(404).json({
-        message: "Order status not found"
+        message: "Order status not found",
       });
     }
 
     res.json({
       currentStatus: tracker.currentStatus,
-      statusHistory: tracker.statusHistory || []
+      statusHistory: tracker.statusHistory || [],
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

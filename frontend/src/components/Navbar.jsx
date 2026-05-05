@@ -53,6 +53,7 @@ const Navbar = () => {
             <Link to="/seller/reviews">Product Reviews</Link>
             <Link to="/seller/delivery-slots">Delivery Slots</Link>
             <Link to="/seller/polls">Product Polls</Link>
+            <Link to="/seller/orders">Manage Orders</Link>
             <Link to="/chat">Chats</Link>
           </>
         )}

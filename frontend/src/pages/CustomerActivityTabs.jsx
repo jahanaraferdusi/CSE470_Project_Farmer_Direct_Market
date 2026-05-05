@@ -89,7 +89,7 @@ const CustomerActivityTabs = () => {
           ) : (
             orders.map((order) => (
               <div key={order._id} style={cardStyle}>
-                <h3 style={{ marginTop: 0 }}>Order #{order._id.slice(-6).toUpperCase()}</h3>
+                <h3 style={{ marginTop: 0 }}>Order ID: {order._id}</h3>
                 <p><strong>Status:</strong> {order.status}</p>
                 <p><strong>Ordered On:</strong> {new Date(order.createdAt).toLocaleString()}</p>
                 <p><strong>Shipping Address:</strong> {order.shippingAddress}</p>

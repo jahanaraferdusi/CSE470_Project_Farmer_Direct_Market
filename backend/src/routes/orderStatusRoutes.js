@@ -6,7 +6,10 @@ const {
   getStatus
 } = require("../controllers/orderStatusController");
 
-router.post("/update", updateStatus);
+// ✅ Get order status
 router.get("/:orderId", getStatus);
+
+// ✅ Update order status
+router.put("/:orderId", updateStatus);
 
 module.exports = router;

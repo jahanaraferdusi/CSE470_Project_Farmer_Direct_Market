@@ -28,6 +28,7 @@ import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
 import ProductReview from "./pages/ProductReview";
 import DeliverySlots from "./pages/DeliverySlots";
+import SellerOrders from "./pages/SellerOrders";
 
 function App() {
   return (
@@ -124,6 +125,15 @@ function App() {
           element={
             <PrivateRoute role="seller">
               <SellerPolls />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/orders"
+          element={
+            <PrivateRoute role="seller">
+              <SellerOrders />
             </PrivateRoute>
           }
         />
