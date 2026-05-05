@@ -1,45 +1,23 @@
 const express = require("express");
-const { isLoggedIn } = require("../middlewares/authMiddleware");
-const authorizeRoles = require("../middlewares/roleMiddleware");
-
-const {
-  addHarvestEntry,
-  getAllHarvestEntries,
-  getMyHarvestEntries,
-  updateHarvestEntry,
-  deleteHarvestEntry,
-} = require("../controllers/harvestCalendarController");
-
 const router = express.Router();
 
-router.get("/", getAllHarvestEntries);
+const {
+  getAllHarvestItems,
+  getSellerHarvestItems,
+  createHarvestItem,
+  updateHarvestItem,
+  deleteHarvestItem,
+} = require("../controllers/harvestCalendarController");
 
-router.get(
-  "/seller/my",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  getMyHarvestEntries
-);
+const { isLoggedIn, authorizeRoles } = require("../middlewares/authMiddleware");
 
-router.post(
-  "/",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  addHarvestEntry
-);
+// Customer and admin can see all upcoming harvest products
+router.get("/", getAllHarvestItems);
 
-router.put(
-  "/:entryId",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  updateHarvestEntry
-);
-
-router.delete(
-  "/:entryId",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  deleteHarvestEntry
-);
+// Seller can manage own harvest products
+router.get("/seller", isLoggedIn, authorizeRoles("seller"), getSellerHarvestItems);
+router.post("/", isLoggedIn, authorizeRoles("seller"), createHarvestItem);
+router.put("/:id", isLoggedIn, authorizeRoles("seller"), updateHarvestItem);
+router.delete("/:id", isLoggedIn, authorizeRoles("seller"), deleteHarvestItem);
 
 module.exports = router;

@@ -23,7 +23,7 @@ import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import CustomerPolls from "./pages/CustomerPolls";
-
+import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
 import ProductReview from "./pages/ProductReview";
@@ -43,7 +43,14 @@ function App() {
         {/* Public Harvest Calendar route.
             Admin, seller, customer, and outsider can all see this page. */}
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
-
+        <Route
+  path="/seller/harvest-calendar"
+  element={
+    <PrivateRoute role="seller">
+      <SellerHarvestCalendar />
+    </PrivateRoute>
+  }
+/>
         {/* Admin Routes */}
         <Route
           path="/admin/seller-approval"

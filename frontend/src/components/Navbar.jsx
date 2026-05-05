@@ -48,7 +48,7 @@ const Navbar = () => {
             <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>
             <Link to="/seller/wishlist-stats">Wishlist Stats</Link>
             <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
-            <Link to="/seller/reviews">Product Reviews</Link>
+      
             <Link to="/seller/delivery-slots">Delivery Slots</Link>
             <Link to="/seller/polls">Product Polls</Link>
             <Link to="/chat">Chats</Link>

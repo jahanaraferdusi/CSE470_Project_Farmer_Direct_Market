@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 const ProductCard = ({ product, onAddToCart }) => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [wished, setWished] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatText, setChatText] = useState("");
+  const [sendingChat, setSendingChat] = useState(false);
 
+  const user = JSON.parse(localStorage.getItem("user"));
   const userId = localStorage.getItem("userId");
   const isOutOfStock = product.stock <= 0;
 
@@ -16,22 +23,51 @@ const ProductCard = ({ product, onAddToCart }) => {
 
     try {
       setLoading(true);
-
-      await axios.post("http://localhost:5000/api/wishlist/add", {
+      await API.post("/wishlist/add", {
         userId,
         productId: product._id,
       });
-
       setWished(true);
     } catch (err) {
       if (err.response?.data?.msg === "Already wished") {
         setWished(true);
       } else {
-        console.error(err);
         alert("Error adding to wishlist");
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStartChat = async (e) => {
+    e.preventDefault();
+
+    if (!user || user.role !== "customer") {
+      alert("Please login as customer to message the seller.");
+      navigate("/login");
+      return;
+    }
+
+    if (!chatText.trim()) {
+      alert("Please write a message first.");
+      return;
+    }
+
+    try {
+      setSendingChat(true);
+
+      await API.post("/chats/send", {
+        productId: product._id,
+        text: chatText.trim(),
+      });
+
+      setChatText("");
+      setChatOpen(false);
+      navigate("/chat");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to start chat.");
+    } finally {
+      setSendingChat(false);
     }
   };
 
@@ -56,16 +92,8 @@ const ProductCard = ({ product, onAddToCart }) => {
         {product.name}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "12px",
-        }}
-      >
-        <h3 style={{ margin: "0 0 8px", color: "#245c2f" }}>
-          {product.name}
-        </h3>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "12px" }}>
+        <h3 style={{ margin: "0 0 8px", color: "#245c2f" }}>{product.name}</h3>
 
         <span
           style={{
@@ -94,61 +122,14 @@ const ProductCard = ({ product, onAddToCart }) => {
       )}
 
       <div style={{ margin: "14px 0" }}>
-        <span
-          style={{
-            fontSize: "22px",
-            fontWeight: "800",
-            color: "#245c2f",
-          }}
-        >
+        <span style={{ fontSize: "22px", fontWeight: "800", color: "#245c2f" }}>
           ৳ {product.price}
         </span>
-
-        {product.isDiscounted && product.originalPrice ? (
-          <>
-            <span
-              style={{
-                textDecoration: "line-through",
-                color: "#777",
-                marginLeft: "8px",
-              }}
-            >
-              ৳ {product.originalPrice}
-            </span>
-
-            <span
-              style={{
-                color: "#c62828",
-                fontWeight: "800",
-                marginLeft: "8px",
-                fontSize: "13px",
-              }}
-            >
-              {product.discountPercentage}% OFF
-            </span>
-          </>
-        ) : null}
       </div>
-
-      {product.averageRating !== undefined && (
-        <p style={{ margin: "8px 0", color: "#607064" }}>
-          <strong>Rating:</strong>{" "}
-          {product.averageRating > 0
-            ? `${product.averageRating} ⭐ (${product.reviewCount || 0})`
-            : "No reviews yet"}
-        </p>
-      )}
 
       <p style={{ margin: "8px 0 16px", color: "#607064" }}>
         <strong>Available Stock:</strong> {product.stock}
       </p>
-
-      {product.expiryDate && (
-        <p style={{ margin: "8px 0 16px", color: "#607064" }}>
-          <strong>Expiry:</strong>{" "}
-          {new Date(product.expiryDate).toLocaleDateString()}
-        </p>
-      )}
 
       {product.stock > 0 ? (
         <button
@@ -167,12 +148,39 @@ const ProductCard = ({ product, onAddToCart }) => {
           disabled={loading || wished}
           style={{ width: "100%" }}
         >
-          {loading
-            ? "Adding..."
-            : wished
-            ? "❤️ Added to Wishlist"
-            : "❤️ Add to Wishlist"}
+          {loading ? "Adding..." : wished ? "❤️ Added to Wishlist" : "❤️ Add to Wishlist"}
         </button>
+      )}
+
+      <button
+        type="button"
+        className="secondary-btn"
+        onClick={() => setChatOpen(!chatOpen)}
+        style={{ width: "100%", marginTop: "10px" }}
+      >
+        💬 Message Seller
+      </button>
+
+      {chatOpen && (
+        <form onSubmit={handleStartChat} style={{ marginTop: "12px" }}>
+          <textarea
+            className="form-input"
+            rows="3"
+            placeholder={`Ask seller about ${product.name}`}
+            value={chatText}
+            onChange={(e) => setChatText(e.target.value)}
+            style={{ resize: "none" }}
+          />
+
+          <button
+            type="submit"
+            className="primary-btn"
+            disabled={sendingChat}
+            style={{ width: "100%", marginTop: "8px" }}
+          >
+            {sendingChat ? "Sending..." : "Start Conversation"}
+          </button>
+        </form>
       )}
 
       <a
