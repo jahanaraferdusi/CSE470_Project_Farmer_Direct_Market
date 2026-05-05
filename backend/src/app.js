@@ -20,6 +20,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const orderStatusRoutes = require("./routes/orderStatusRoutes");
+const walletRoutes = require("./routes/walletRoutes");
 const returnRoutes = require("./routes/returnRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
@@ -55,6 +56,7 @@ app.use("/api/seed", seedRoutes);
 app.use("/api/order-status", orderStatusRoutes);
 app.use("/api/returns", returnRoutes);
 app.use("/api/compare", compareRoutes);
+app.use("/api/wallet", walletRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -1,213 +1,77 @@
 const HarvestCalendar = require("../models/HarvestCalendar");
-const User = require("../models/User");
 
-const addHarvestEntry = async (req, res, next) => {
+exports.getAllHarvestItems = async (req, res) => {
   try {
-    const seller = await User.findById(req.user._id);
+    const items = await HarvestCalendar.find()
+      .populate("seller", "name email")
+      .sort({ expectedHarvestDate: 1 });
 
-    if (!seller || seller.role !== "seller") {
-      return res.status(403).json({ message: "Only sellers can add harvest calendar entries" });
-    }
+    res.status(200).json(items);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch harvest calendar", error: error.message });
+  }
+};
 
-    if (!seller.sellerVerified) {
-      return res.status(403).json({ message: "Seller is not verified yet" });
-    }
+exports.getSellerHarvestItems = async (req, res) => {
+  try {
+    const items = await HarvestCalendar.find({ seller: req.user._id }).sort({
+      expectedHarvestDate: 1,
+    });
 
-    const {
-      cropName,
-      cropCategory,
-      plantedDate,
-      expectedHarvestDate,
-      quantity,
-      unit,
-      location,
-      notes,
-      status,
-    } = req.body;
+    res.status(200).json(items);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch seller harvest items", error: error.message });
+  }
+};
 
-    if (!cropName || !cropCategory || !plantedDate || !expectedHarvestDate || quantity === undefined) {
-      return res.status(400).json({
-        message: "cropName, cropCategory, plantedDate, expectedHarvestDate, and quantity are required",
-      });
-    }
-
-    const planted = new Date(plantedDate);
-    const harvest = new Date(expectedHarvestDate);
-
-    if (harvest < planted) {
-      return res.status(400).json({
-        message: "Expected harvest date cannot be before planted date",
-      });
-    }
-
-    const entry = await HarvestCalendar.create({
+exports.createHarvestItem = async (req, res) => {
+  try {
+    const item = await HarvestCalendar.create({
+      ...req.body,
       seller: req.user._id,
-      cropName,
-      cropCategory,
-      plantedDate,
-      expectedHarvestDate,
-      quantity: Number(quantity),
-      unit: unit || "kg",
-      location,
-      notes,
-      status: status || "Planted",
     });
 
-    res.status(201).json({
-      message: "Harvest calendar entry added successfully",
-      entry,
+    res.status(201).json({ message: "Harvest item added successfully", item });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add harvest item", error: error.message });
+  }
+};
+
+exports.updateHarvestItem = async (req, res) => {
+  try {
+    const item = await HarvestCalendar.findOne({
+      _id: req.params.id,
+      seller: req.user._id,
     });
+
+    if (!item) {
+      return res.status(404).json({ message: "Harvest item not found" });
+    }
+
+    Object.assign(item, req.body);
+    const updatedItem = await item.save();
+
+    res.status(200).json({ message: "Harvest item updated successfully", item: updatedItem });
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: "Failed to update harvest item", error: error.message });
   }
 };
 
-const getAllHarvestEntries = async (req, res, next) => {
+exports.deleteHarvestItem = async (req, res) => {
   try {
-    const { search, status, month, sellerId, category } = req.query;
-
-    const query = {};
-
-    if (search) {
-      query.$or = [
-        { cropName: { $regex: search, $options: "i" } },
-        { cropCategory: { $regex: search, $options: "i" } },
-        { location: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    if (status) {
-      query.status = status;
-    }
-
-    if (sellerId) {
-      query.seller = sellerId;
-    }
-
-    if (category) {
-      query.cropCategory = { $regex: `^${category}$`, $options: "i" };
-    }
-
-    if (month) {
-      const year = new Date().getFullYear();
-      const monthNumber = Number(month);
-
-      if (monthNumber < 1 || monthNumber > 12) {
-        return res.status(400).json({ message: "Month must be between 1 and 12" });
-      }
-
-      const startDate = new Date(year, monthNumber - 1, 1);
-      const endDate = new Date(year, monthNumber, 1);
-
-      query.expectedHarvestDate = {
-        $gte: startDate,
-        $lt: endDate,
-      };
-    }
-
-    const entries = await HarvestCalendar.find(query)
-      .populate("seller", "name email")
-      .sort({ expectedHarvestDate: 1 });
-
-    res.status(200).json(entries);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getMyHarvestEntries = async (req, res, next) => {
-  try {
-    const entries = await HarvestCalendar.find({ seller: req.user._id })
-      .populate("seller", "name email")
-      .sort({ expectedHarvestDate: 1 });
-
-    res.status(200).json(entries);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const updateHarvestEntry = async (req, res, next) => {
-  try {
-    const { entryId } = req.params;
-
-    const entry = await HarvestCalendar.findById(entryId);
-
-    if (!entry) {
-      return res.status(404).json({ message: "Harvest calendar entry not found" });
-    }
-
-    if (entry.seller.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "You can update only your own harvest calendar entries" });
-    }
-
-    const {
-      cropName,
-      cropCategory,
-      plantedDate,
-      expectedHarvestDate,
-      quantity,
-      unit,
-      location,
-      notes,
-      status,
-    } = req.body;
-
-    if (cropName !== undefined) entry.cropName = cropName;
-    if (cropCategory !== undefined) entry.cropCategory = cropCategory;
-    if (plantedDate !== undefined) entry.plantedDate = plantedDate;
-    if (expectedHarvestDate !== undefined) entry.expectedHarvestDate = expectedHarvestDate;
-    if (quantity !== undefined) entry.quantity = Number(quantity);
-    if (unit !== undefined) entry.unit = unit;
-    if (location !== undefined) entry.location = location;
-    if (notes !== undefined) entry.notes = notes;
-    if (status !== undefined) entry.status = status;
-
-    if (new Date(entry.expectedHarvestDate) < new Date(entry.plantedDate)) {
-      return res.status(400).json({
-        message: "Expected harvest date cannot be before planted date",
-      });
-    }
-
-    await entry.save();
-
-    res.status(200).json({
-      message: "Harvest calendar entry updated successfully",
-      entry,
+    const item = await HarvestCalendar.findOne({
+      _id: req.params.id,
+      seller: req.user._id,
     });
-  } catch (error) {
-    next(error);
-  }
-};
 
-const deleteHarvestEntry = async (req, res, next) => {
-  try {
-    const { entryId } = req.params;
-
-    const entry = await HarvestCalendar.findById(entryId);
-
-    if (!entry) {
-      return res.status(404).json({ message: "Harvest calendar entry not found" });
+    if (!item) {
+      return res.status(404).json({ message: "Harvest item not found" });
     }
 
-    if (entry.seller.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "You can delete only your own harvest calendar entries" });
-    }
+    await item.deleteOne();
 
-    await HarvestCalendar.findByIdAndDelete(entryId);
-
-    res.status(200).json({
-      message: "Harvest calendar entry deleted successfully",
-    });
+    res.status(200).json({ message: "Harvest item deleted successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: "Failed to delete harvest item", error: error.message });
   }
-};
-
-module.exports = {
-  addHarvestEntry,
-  getAllHarvestEntries,
-  getMyHarvestEntries,
-  updateHarvestEntry,
-  deleteHarvestEntry,
 };

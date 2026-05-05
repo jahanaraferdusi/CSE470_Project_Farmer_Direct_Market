@@ -3,6 +3,7 @@ const Product = require("../models/Product");
 const Order = require("../models/Order");
 const OrderStatusTracker = require("../models/OrderStatusTracker");
 const ReturnRequest = require("../models/ReturnRequest");
+
 const allowedDeliverySlots = [
   "08:00 AM - 11:00 AM",
   "11:00 AM - 02:00 PM",
@@ -54,18 +55,17 @@ const checkout = async (req, res, next) => {
 
       totalAmount += product.price * item.quantity;
     }
+
     const user = req.user;
 
-    // Apply wallet discount
     if (user.walletDiscount > 0) {
-      const discountAmount =
-        (totalAmount * user.walletDiscount) / 100;
-
+      const discountAmount = (totalAmount * user.walletDiscount) / 100;
       totalAmount -= discountAmount;
 
       user.walletDiscount = 0;
       await user.save();
-}
+    }
+
     const order = await Order.create({
       customer: req.user._id,
       items: orderItems,
@@ -75,11 +75,18 @@ const checkout = async (req, res, next) => {
       deliverySlot,
       status: "Pending",
     });
+
     await OrderStatusTracker.create({
       orderId: order._id,
       currentStatus: "Pending",
-      statusHistory: [{ status: "Pending" }]
+      statusHistory: [
+        {
+          status: "Pending",
+          date: new Date(),
+        },
+      ],
     });
+
     cart.items = [];
     await cart.save();
 
@@ -95,19 +102,22 @@ const checkout = async (req, res, next) => {
 const getMyOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ customer: req.user._id })
-      .populate("items.product", "name category")
+      .populate("items.product", "name category price")
       .sort({ createdAt: -1 });
 
     const orderIds = orders.map((order) => order._id);
-    const returnRequests = await ReturnRequest.find({ order: { $in: orderIds } }).select(
-      "order status"
-    );
+
+    const returnRequests = await ReturnRequest.find({
+      order: { $in: orderIds },
+    }).select("order status");
 
     const requestsByOrder = returnRequests.reduce((acc, request) => {
       const orderId = request.order.toString();
+
       if (!acc[orderId]) {
         acc[orderId] = [];
       }
+
       acc[orderId].push(request.status);
       return acc;
     }, {});
@@ -135,6 +145,41 @@ const getMyOrders = async (req, res, next) => {
     });
 
     res.status(200).json(ordersWithReturnInfo);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getSellerOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ "items.seller": req.user._id })
+      .populate("items.product", "name category price")
+      .populate("customer", "name email")
+      .sort({ createdAt: -1 });
+
+    const sellerOrders = orders.map((order) => {
+      const sellerItems = order.items.filter(
+        (item) => item.seller.toString() === req.user._id.toString()
+      );
+
+      return {
+        _id: order._id,
+        customerName: order.customer?.name || "Customer",
+        customerEmail: order.customer?.email || "N/A",
+        items: sellerItems,
+        totalAmount: sellerItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        ),
+        paymentMethod: order.paymentMethod,
+        shippingAddress: order.shippingAddress,
+        deliverySlot: order.deliverySlot,
+        status: order.status,
+        createdAt: order.createdAt,
+      };
+    });
+
+    res.status(200).json(sellerOrders);
   } catch (error) {
     next(error);
   }
@@ -209,6 +254,7 @@ const getAdminDeliverySlots = async (req, res, next) => {
 module.exports = {
   checkout,
   getMyOrders,
+  getSellerOrders,
   getSellerDeliverySlots,
   getAdminDeliverySlots,
 };

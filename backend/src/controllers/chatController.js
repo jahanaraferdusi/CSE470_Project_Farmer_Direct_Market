@@ -74,9 +74,14 @@ const replyMessage = async (req, res, next) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    if (chat.seller.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "You can reply only to your own chats" });
-    }
+const userId = req.user._id.toString();
+
+if (
+  chat.customer.toString() !== userId &&
+  chat.seller.toString() !== userId
+) {
+  return res.status(403).json({ message: "You cannot reply to this chat" });
+}
 
     chat.messages.push({
       sender: req.user._id,

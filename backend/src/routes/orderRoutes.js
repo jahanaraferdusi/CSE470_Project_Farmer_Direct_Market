@@ -5,6 +5,7 @@ const authorizeRoles = require("../middlewares/roleMiddleware");
 const {
   checkout,
   getMyOrders,
+  getSellerOrders,
   getSellerDeliverySlots,
   getAdminDeliverySlots,
 } = require("../controllers/orderController");
@@ -25,6 +26,13 @@ router.get(
   isLoggedIn,
   authorizeRoles("admin"),
   getAdminDeliverySlots
+);
+
+router.get(
+  "/seller/orders",
+  isLoggedIn,
+  authorizeRoles("seller"),
+  getSellerOrders
 );
 
 router.post("/checkout", isLoggedIn, authorizeRoles("customer"), checkout);

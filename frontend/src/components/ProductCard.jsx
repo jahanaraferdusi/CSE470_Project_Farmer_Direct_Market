@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import axios from "axios";
-const addToCompare = async (productId) => {
-  await axios.post("/api/compare/add", {
-    customerId: "YOUR_CUSTOMER_ID",
-    productId
-  });
-};
+import { Link, useNavigate } from "react-router-dom";
+import API from "../services/api";
 
-<button onClick={() => addToCompare(product._id)}>
-  Compare
-</button>
 const ProductCard = ({ product, onAddToCart }) => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [wished, setWished] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatText, setChatText] = useState("");
+  const [sendingChat, setSendingChat] = useState(false);
 
+  const user = JSON.parse(localStorage.getItem("user"));
   const userId = localStorage.getItem("userId");
   const isOutOfStock = product.stock <= 0;
 
@@ -26,7 +24,7 @@ const ProductCard = ({ product, onAddToCart }) => {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/wishlist/add", {
+      await API.post("/wishlist/add", {
         userId,
         productId: product._id,
       });
@@ -36,7 +34,6 @@ const ProductCard = ({ product, onAddToCart }) => {
       if (err.response?.data?.msg === "Already wished") {
         setWished(true);
       } else {
-        console.error(err);
         alert("Error adding to wishlist");
       }
     } finally {
@@ -44,26 +41,81 @@ const ProductCard = ({ product, onAddToCart }) => {
     }
   };
 
+  const handleAddToCompare = async () => {
+    if (!user || user.role !== "customer") {
+      alert("Please login as customer to compare products.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await API.post("/compare/add", {
+        productId: product._id,
+      });
+
+      alert("Product added to compare.");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to add to compare.");
+    }
+  };
+
+  const handleStartChat = async (e) => {
+    e.preventDefault();
+
+    if (!user || user.role !== "customer") {
+      alert("Please login as customer to message the seller.");
+      navigate("/login");
+      return;
+    }
+
+    if (!chatText.trim()) {
+      alert("Please write a message first.");
+      return;
+    }
+
+    try {
+      setSendingChat(true);
+
+      await API.post("/chats/send", {
+        productId: product._id,
+        text: chatText.trim(),
+      });
+
+      setChatText("");
+      setChatOpen(false);
+      navigate("/chat");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to start chat.");
+    } finally {
+      setSendingChat(false);
+    }
+  };
+
   return (
     <div className="product-card">
-      <div
-        style={{
-          minHeight: "120px",
-          background: "#f3f8ef",
-          borderRadius: "14px",
-          marginBottom: "16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#245c2f",
-          fontWeight: "800",
-          fontSize: "18px",
-          textAlign: "center",
-          padding: "14px",
-        }}
+      <Link
+        to={`/products/${product._id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
       >
-        {product.name}
-      </div>
+        <div
+          style={{
+            minHeight: "120px",
+            background: "#f3f8ef",
+            borderRadius: "14px",
+            marginBottom: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#245c2f",
+            fontWeight: "800",
+            fontSize: "18px",
+            textAlign: "center",
+            padding: "14px",
+          }}
+        >
+          {product.name}
+        </div>
+      </Link>
 
       <div
         style={{
@@ -184,8 +236,60 @@ const ProductCard = ({ product, onAddToCart }) => {
         </button>
       )}
 
-      <a
-        href={`/products/${product._id}/reviews`}
+      <button
+        type="button"
+        className="secondary-btn"
+        onClick={handleAddToCompare}
+        style={{ width: "100%", marginTop: "10px" }}
+      >
+        Compare
+      </button>
+
+      <button
+        type="button"
+        className="secondary-btn"
+        onClick={() => setChatOpen(!chatOpen)}
+        style={{ width: "100%", marginTop: "10px" }}
+      >
+        💬 Message Seller
+      </button>
+
+      {chatOpen && (
+        <form onSubmit={handleStartChat} style={{ marginTop: "12px" }}>
+          <textarea
+            className="form-input"
+            rows="3"
+            placeholder={`Ask seller about ${product.name}`}
+            value={chatText}
+            onChange={(e) => setChatText(e.target.value)}
+            style={{ resize: "none" }}
+          />
+
+          <button
+            type="submit"
+            className="primary-btn"
+            disabled={sendingChat}
+            style={{ width: "100%", marginTop: "8px" }}
+          >
+            {sendingChat ? "Sending..." : "Start Conversation"}
+          </button>
+        </form>
+      )}
+
+      <Link
+        to={`/products/${product._id}`}
+        className="secondary-btn"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "10px",
+        }}
+      >
+        View Product
+      </Link>
+
+      <Link
+        to={`/products/${product._id}/reviews`}
         className="secondary-btn"
         style={{
           display: "block",
@@ -194,7 +298,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         }}
       >
         Reviews
-      </a>
+      </Link>
     </div>
   );
 };

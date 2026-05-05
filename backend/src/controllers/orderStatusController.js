@@ -1,15 +1,36 @@
 const OrderStatusTracker = require("../models/OrderStatusTracker");
 const Order = require("../models/Order");
 
-// ✅ Update Status
+const allowedStatuses = [
+  "Pending",
+  "Confirmed",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+];
+
 const updateStatus = async (req, res) => {
   try {
-    const { orderId, status } = req.body;
+    const { orderId } = req.params;
+    const { status } = req.body;
 
     if (!orderId || !status) {
-      return res.status(400).json({
-        message: "orderId and status required"
-      });
+      return res.status(400).json({ message: "orderId and status required" });
+    }
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
     }
 
     let tracker = await OrderStatusTracker.findOne({ orderId });
@@ -17,57 +38,45 @@ const updateStatus = async (req, res) => {
     if (!tracker) {
       tracker = new OrderStatusTracker({
         orderId,
-        statusHistory: []
+        currentStatus: status,
+        statusHistory: [],
       });
     }
 
     tracker.currentStatus = status;
-
     tracker.statusHistory.push({
       status,
-      date: new Date()
+      date: new Date(),
     });
-
-    tracker.updatedAt = new Date();
 
     await tracker.save();
 
-    if (["Pending", "Confirmed", "Delivered", "Cancelled"].includes(status)) {
-      await Order.findByIdAndUpdate(orderId, { status });
-    }
-
     res.json({
       success: true,
-      tracker
+      order,
+      tracker,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// ✅ Get Status
 const getStatus = async (req, res) => {
   try {
     const tracker = await OrderStatusTracker.findOne({
-      orderId: req.params.orderId
+      orderId: req.params.orderId,
     });
 
-    // ⭐ IMPORTANT FIX
     if (!tracker) {
-      return res.status(404).json({
-        message: "Order status not found"
-      });
+      return res.status(404).json({ message: "Order status not found" });
     }
 
     res.json({
       currentStatus: tracker.currentStatus,
-      statusHistory: tracker.statusHistory || []
+      statusHistory: tracker.statusHistory || [],
     });
-
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 

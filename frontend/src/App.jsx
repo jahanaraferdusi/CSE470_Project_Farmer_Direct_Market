@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import AdminSellerApproval from "./pages/AdminSellerApproval";
 
 import SellerAddProduct from "./pages/SellerAddProduct";
+import SellerOrders from "./pages/SellerOrders";
 import SellerProducts from "./pages/SellerProduct";
 import SellerStock from "./pages/SellerStock";
 import SellerWishlistStats from "./pages/SellerWishlistStats";
@@ -25,6 +26,7 @@ import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import CustomerPolls from "./pages/CustomerPolls";
 import Compare from "./pages/compare";
+import SellerHarvestCalendar from "./pages/SellerHarvestCalendar";
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
 import ProductReview from "./pages/ProductReview";
@@ -46,6 +48,14 @@ function App() {
             Admin, seller, customer, and outsider can all see this page. */}
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
 
+        <Route
+          path="/seller/harvest-calendar"
+          element={
+            <PrivateRoute role="seller">
+              <SellerHarvestCalendar />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/reffer"
@@ -137,6 +147,15 @@ function App() {
           element={
             <PrivateRoute role="seller">
               <SellerPolls />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/orders"
+          element={
+            <PrivateRoute role="seller">
+              <SellerOrders />
             </PrivateRoute>
           }
         />

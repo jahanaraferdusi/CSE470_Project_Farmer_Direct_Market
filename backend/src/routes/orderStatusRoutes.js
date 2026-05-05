@@ -3,10 +3,10 @@ const router = express.Router();
 
 const {
   updateStatus,
-  getStatus
+  getStatus,
 } = require("../controllers/orderStatusController");
 
-router.post("/update", updateStatus);
 router.get("/:orderId", getStatus);
+router.put("/:orderId", updateStatus);
 
 module.exports = router;
