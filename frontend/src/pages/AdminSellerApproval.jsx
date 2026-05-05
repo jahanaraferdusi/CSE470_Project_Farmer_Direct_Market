@@ -4,35 +4,22 @@ import API from "../services/api";
 const AdminSellerApproval = () => {
   const [sellers, setSellers] = useState([]);
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState("");
-  const [loadingSellers, setLoadingSellers] = useState(false);
-  const [loadingUsers, setLoadingUsers] = useState(false);
 
   const fetchPendingSellers = async () => {
     try {
-      setLoadingSellers(true);
-      setMessage("");
-
       const res = await API.get("/sellers/pending");
       setSellers(res.data);
     } catch (error) {
-      setMessage("Failed to fetch pending sellers.");
-    } finally {
-      setLoadingSellers(false);
+      alert("Failed to fetch pending sellers");
     }
   };
 
   const fetchUsers = async () => {
     try {
-      setLoadingUsers(true);
-      setMessage("");
-
       const res = await API.get("/users");
       setUsers(res.data);
     } catch (error) {
-      setMessage("Failed to fetch users.");
-    } finally {
-      setLoadingUsers(false);
+      alert("Failed to fetch users");
     }
   };
 
@@ -43,165 +30,80 @@ const AdminSellerApproval = () => {
 
   const handleVerify = async (sellerId) => {
     try {
-      setMessage("");
-
       await API.put(`/sellers/verify/${sellerId}`);
-
-      setMessage("Seller verified successfully.");
+      alert("Seller verified successfully");
       fetchPendingSellers();
       fetchUsers();
     } catch (error) {
-      setMessage(error.response?.data?.message || "Verification failed.");
+      alert(error.response?.data?.message || "Verification failed");
     }
   };
 
   const handleBan = async (userId) => {
     try {
-      setMessage("");
-
       await API.put(`/users/ban/${userId}`);
-
-      setMessage("User banned successfully.");
+      alert("User banned successfully");
       fetchUsers();
     } catch (error) {
-      setMessage(error.response?.data?.message || "Ban failed.");
+      alert(error.response?.data?.message || "Ban failed");
     }
   };
 
   const handleUnban = async (userId) => {
     try {
-      setMessage("");
-
       await API.put(`/users/unban/${userId}`);
-
-      setMessage("User unbanned successfully.");
+      alert("User unbanned successfully");
       fetchUsers();
     } catch (error) {
-      setMessage(error.response?.data?.message || "Unban failed.");
+      alert(error.response?.data?.message || "Unban failed");
     }
   };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1 className="page-title">Admin Dashboard</h1>
-        <p className="page-subtitle">
-          Review seller requests and manage user account status.
-        </p>
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h2>Pending Seller Requests</h2>
 
-      {message && (
-        <div
-          className={
-            message.toLowerCase().includes("successfully")
-              ? "success-box"
-              : "error-box"
-          }
-        >
-          {message}
-        </div>
+      {sellers.length === 0 ? (
+        <p>No pending sellers</p>
+      ) : (
+        sellers.map((seller) => (
+          <div
+            key={seller._id}
+            style={{ border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}
+          >
+            <p>Name: {seller.name}</p>
+            <p>Email: {seller.email}</p>
+            <button onClick={() => handleVerify(seller._id)}>Verify Seller</button>
+          </div>
+        ))
       )}
 
-      <div className="page-card">
-        <h2 className="card-title">Pending Seller Requests</h2>
+      <hr style={{ margin: "30px 0" }} />
 
-        {loadingSellers ? (
-          <div className="empty-state">Loading pending sellers...</div>
-        ) : sellers.length === 0 ? (
-          <div className="empty-state">No pending sellers.</div>
-        ) : (
-          <div className="card-grid">
-            {sellers.map((seller) => (
-              <div key={seller._id} className="pretty-card">
-                <h3 style={{ color: "#245c2f", marginTop: 0 }}>
-                  {seller.name}
-                </h3>
+      <h2>All Users</h2>
 
-                <p>
-                  <strong>Email:</strong> {seller.email}
-                </p>
-                <p>
-                  <strong>Role:</strong> {seller.role}
-                </p>
+      {users.length === 0 ? (
+        <p>No users found</p>
+      ) : (
+        users.map((user) => (
+          <div
+            key={user._id}
+            style={{ border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}
+          >
+            <p>Name: {user.name}</p>
+            <p>Email: {user.email}</p>
+            <p>Role: {user.role}</p>
+            <p>Status: {user.isBanned ? "Banned" : "Active"}</p>
 
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={() => handleVerify(seller._id)}
-                  style={{ width: "100%", marginTop: "10px" }}
-                >
-                  Verify Seller
-                </button>
-              </div>
-            ))}
+            {user.role !== "admin" &&
+              (user.isBanned ? (
+                <button onClick={() => handleUnban(user._id)}>Unban</button>
+              ) : (
+                <button onClick={() => handleBan(user._id)}>Ban</button>
+              ))}
           </div>
-        )}
-      </div>
-
-      <div className="page-card">
-        <h2 className="card-title">All Users</h2>
-
-        {loadingUsers ? (
-          <div className="empty-state">Loading users...</div>
-        ) : users.length === 0 ? (
-          <div className="empty-state">No users found.</div>
-        ) : (
-          <div className="table-wrapper">
-            <table className="pretty-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>
-                      <span
-                        style={{
-                          color: user.isBanned ? "#c62828" : "#2e7d32",
-                          fontWeight: "800",
-                        }}
-                      >
-                        {user.isBanned ? "Banned" : "Active"}
-                      </span>
-                    </td>
-                    <td>
-                      {user.role === "admin" ? (
-                        <span style={{ color: "#607064" }}>No action</span>
-                      ) : user.isBanned ? (
-                        <button
-                          type="button"
-                          className="secondary-btn"
-                          onClick={() => handleUnban(user._id)}
-                        >
-                          Unban
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="danger-btn"
-                          onClick={() => handleBan(user._id)}
-                        >
-                          Ban
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        ))
+      )}
     </div>
   );
 };

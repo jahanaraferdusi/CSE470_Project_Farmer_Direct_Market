@@ -65,44 +65,10 @@ const unbanUser = async (req, res, next) => {
     next(error);
   }
 };
-const applyReferralCode = async (req, res) => {
-    const { code } = req.body;
-    const user = await User.findById(req.user._id);
 
-    if (user.usedReferral) {
-        return res.status(400).json({ message: "Referral already used" });
-    }
-
-    const referrer = await User.findOne({ referralCode: code });
-
-    if (!referrer) {
-        return res.status(404).json({ message: "Invalid referral code" });
-    }
-
-    if (referrer._id.toString() === user._id.toString()) {
-        return res.status(400).json({ message: "Cannot use your own code" });
-    }
-
-    // Give 5% to referred user
-    user.walletDiscount += 5;
-    user.usedReferral = true;
-    user.referredBy = code;
-
-    // Give 10% to referrer (only once)
-    if (!referrer.hasReferred) {
-        referrer.walletDiscount += 10;
-        referrer.hasReferred = true;
-    }
-
-    await user.save();
-    await referrer.save();
-
-    res.json({ message: "Referral applied successfully" });
-};
 module.exports = {
   getMyProfile,
   getAllUsers,
   banUser,
   unbanUser,
-  applyReferralCode,
 };

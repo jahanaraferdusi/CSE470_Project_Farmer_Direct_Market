@@ -71,19 +71,8 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
-const generateReferralCode = async(name) => {
-    return name.substring(0, 3).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-    const referralCode = generateReferralCode(name);
 
-    const user = await User.create({
-      name,
-      email,
-      password,
-      referralCode,
-    });
-};
 module.exports = {
   register,
   login,
-  generateReferralCode,
 };

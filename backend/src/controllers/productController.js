@@ -63,38 +63,8 @@ const addProduct = async (req, res, next) => {
       description,
       lowStockThreshold,
       expiryDate,
-      originalPrice,
-      discountPercentage,
-      isDiscounted,
     } = req.body;
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-    const numericPrice = Number(price);
-    const numericOriginalPrice = originalPrice ? Number(originalPrice) : null;
-
-    const normalizedOriginalPrice =
-      numericOriginalPrice && numericOriginalPrice > numericPrice
-        ? numericOriginalPrice
-        : null;
-
-    const normalizedDiscountPercentage = normalizedOriginalPrice
-      ? Number(
-          discountPercentage ||
-<<<<<<< HEAD
-            (
-              ((normalizedOriginalPrice - numericPrice) /
-                normalizedOriginalPrice) *
-              100
-            ).toFixed(2)
-=======
-            (((normalizedOriginalPrice - numericPrice) / normalizedOriginalPrice) * 100).toFixed(2)
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-        )
-      : 0;
-
-    const hasDiscount = Boolean(isDiscounted) || Boolean(normalizedOriginalPrice);
     const safeThreshold = Number(lowStockThreshold) || 5;
     const numericStock = Number(stock);
 
@@ -103,7 +73,7 @@ const addProduct = async (req, res, next) => {
     const product = await Product.create({
       name,
       category,
-      price: numericPrice,
+      price,
       stock: numericStock,
       description,
       lowStockThreshold: safeThreshold,
@@ -113,9 +83,6 @@ const addProduct = async (req, res, next) => {
       spoilageAlert: spoilageMeta.spoilageAlert,
       spoilageAlertDate: spoilageMeta.spoilageAlertDate,
       spoilageStatus: spoilageMeta.spoilageStatus,
-      originalPrice: normalizedOriginalPrice,
-      discountPercentage: hasDiscount ? normalizedDiscountPercentage : 0,
-      isDiscounted: hasDiscount,
     });
 
     res.status(201).json({
@@ -126,28 +93,7 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-const getDiscountedProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find({
-      isDiscounted: true,
-      stock: { $gt: 0 },
-    })
-      .populate("seller", "name email")
-      .sort({ discountPercentage: -1, createdAt: -1 });
-
-    res.status(200).json(products);
-  } catch (error) {
-    next(error);
-  }
-};
-<<<<<<< HEAD
-
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const getAllProducts = async (req, res, next) => {
   try {
     const { search, category, minPrice, maxPrice, sort, inStock } = req.query;
@@ -203,28 +149,6 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
-<<<<<<< HEAD
-const getProductById = async (req, res, next) => {
-  try {
-    const { productId } = req.params;
-
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "name email"
-    );
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json(product);
-  } catch (error) {
-    next(error);
-  }
-};
-
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const updateStock = async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -307,16 +231,7 @@ const getSellerSpoilageAlerts = async (req, res, next) => {
 module.exports = {
   addProduct,
   getAllProducts,
-<<<<<<< HEAD
-  getProductById,
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
-  getDiscountedProducts,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40

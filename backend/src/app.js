@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-require("dotenv").config(); 
-=======
-require("dotenv").config(); // ✅ ADD THIS LINE
-
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -17,21 +11,15 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes.js");
 const seedRoutes = require("./routes/seedRoutes");
-const compareRoutes = require("./routes/compareRoutes");
 const harvestCalendarRoutes = require("./routes/harvestCalendarRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const giftCardRoutes = require("./routes/giftCardRoutes");
-const pollRoutes = require("./routes/pollRoutes");
-const orderStatusRoutes = require("./routes/orderStatusRoutes");
-<<<<<<< HEAD
-const walletRoutes = require("./routes/walletRoutes");
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
 const app = express();
+
+
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -55,17 +43,9 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/harvest-calendar", harvestCalendarRoutes);
 app.use("/api/reviews", reviewRoutes);
-app.use("/api/chats", chatRoutes);
-app.use("/api/gift-cards", giftCardRoutes);
-app.use("/api/polls", pollRoutes);
 app.use("/api/seed", seedRoutes);
-app.use("/api/order-status", orderStatusRoutes);
-app.use("/api/compare", compareRoutes);
-<<<<<<< HEAD
-app.use("/api/wallet", walletRoutes);
-=======
+app.use("/api/chats", chatRoutes);
 
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 app.use(notFound);
 app.use(errorHandler);
 

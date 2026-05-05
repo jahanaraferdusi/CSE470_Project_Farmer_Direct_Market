@@ -12,75 +12,50 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
-      <Link to="/" className="navbar-brand">
-        Farmer Direct Market
-      </Link>
+    <nav style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
+      <Link to="/">Home</Link>{" "}
+      <Link to="/harvest-calendar">Harvest Calendar</Link>{" "}
 
-      <div className="navbar-links">
-        <Link to="/">Home</Link>
-        <Link to="/harvest-calendar">Harvest Calendar</Link>
+      {!user && (
+        <>
+          <Link to="/login">Login</Link>{" "}
+          <Link to="/register">Register</Link>
+        </>
+      )}
 
-        {!user && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
+      {user?.role === "admin" && (
+        <>
+          <Link to="/admin/sellers">Verify Sellers / Manage Users</Link>{" "}
+        </>
+      )}
 
-        {user?.role === "customer" && (
-          <>
-            <Link to="/cart">Cart</Link>
-            <Link to="/checkout">Checkout</Link>
-            <Link to="/wishlist">Wishlist</Link>
-            <Link to="/gift-card">Gift Card</Link>
-<<<<<<< HEAD
-            <Link to="/wallet">Smart Wallet</Link>
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-            <Link to="/customer/activity">My Activity</Link>
-            <Link to="/polls">Product Polls</Link>
-            <Link to="/chat">Chat</Link>
-            <Link to="/track-order">Track Order</Link>
-            <Link to="/compare">Compare</Link>
-          </>
-        )}
+      {user?.role === "seller" && (
+        <>
+          <Link to="/seller/add-product">Add Product</Link>{" "}
+          <Link to="/seller/stock">Manage Stock</Link>{" "}
+          <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>{" "}
+          <Link to="/seller-wishlist">Wishlist Stats</Link>
+          <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
+          <Link to="/seller/reviews">Product Reviews</Link>
+        </>
+      )}
 
-        {user?.role === "seller" && (
-          <>
-            <Link to="/seller/products">My Products</Link>
-            <Link to="/seller/add-product">Add Product</Link>
-<<<<<<< HEAD
-            <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
-            <Link to="/seller/stock">Stock</Link>
-            <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>
-            <Link to="/seller/wishlist-stats">Wishlist Stats</Link>
-=======
-            <Link to="/seller/stock">Stock</Link>
-            <Link to="/seller/spoilage-alerts">Spoilage Alerts</Link>
-            <Link to="/seller/wishlist-stats">Wishlist Stats</Link>
-            <Link to="/seller/harvest-calendar">Manage Harvest Calendar</Link>
-            <Link to="/seller/reviews">Product Reviews</Link>
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
-            <Link to="/seller/delivery-slots">Delivery Slots</Link>
-            <Link to="/seller/polls">Product Polls</Link>
-            <Link to="/chat">Chats</Link>
-          </>
-        )}
+      {user?.role === "customer" && (
+        <>
+          <Link to="/cart">Cart</Link>{" "}
+          <Link to="/checkout">Checkout</Link>{" "}
+          <Link to="/wishlist">Wishlist</Link>
+        </>
+      )}
 
-        {user?.role === "admin" && (
-          <>
-            <Link to="/admin/seller-approval">Seller Approval</Link>
-            <Link to="/admin/delivery-slots">Delivery Slots</Link>
-          </>
-        )}
-
-        {user && (
-          <button type="button" onClick={handleLogout}>
-            Logout
-          </button>
-        )}
-      </div>
+      {user && (
+        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
+          Logout
+        </button>
+      )}
+      {(user?.role === "customer" || user?.role === "seller") && (
+      <Link to="/chat">Chat</Link>
+     )}
     </nav>
   );
 };

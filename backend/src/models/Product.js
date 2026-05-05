@@ -39,6 +39,7 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
+
     expiryDate: {
       type: Date,
       default: null,
@@ -56,29 +57,16 @@ const productSchema = new Schema(
       enum: ["fresh", "warning", "spoiled"],
       default: "fresh",
     },
-    originalPrice: {
-      type: Number,
-      min: 0,
-      default: null,
-    },
-    discountPercentage: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 0,
-    },
-    isDiscounted: {
-      type: Boolean,
-      default: false,
-    },
+
     wishlistCount: {
       type: Number,
       default: 0,
     },
-    averageRating: {
+        averageRating: {
       type: Number,
       default: 0,
     },
+
     reviewCount: {
       type: Number,
       default: 0,
