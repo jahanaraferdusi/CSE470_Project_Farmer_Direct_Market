@@ -16,13 +16,18 @@ import SellerStock from "./pages/SellerStock";
 import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import SellerPolls from "./pages/SellerPolls";
+<<<<<<< HEAD
 
+=======
+import OrderStatus from "./pages/OrderStatus";
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import CustomerPolls from "./pages/CustomerPolls";
+<<<<<<< HEAD
 import Wallet from "./pages/Wallet";
 import Compare from "./pages/compare";
 
@@ -32,6 +37,13 @@ import ProductReview from "./pages/ProductReview";
 import ProductDetails from "./pages/ProductDetails";
 import DeliverySlots from "./pages/DeliverySlots";
 import OrderStatus from "./pages/OrderStatus";
+=======
+import Compare from "./pages/compare";
+import HarvestCalendar from "./pages/HarvestCalendar";
+import Chat from "./pages/Chat";
+import ProductReview from "./pages/ProductReview";
+import DeliverySlots from "./pages/DeliverySlots";
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 
 function App() {
   return (
@@ -39,6 +51,7 @@ function App() {
       <Navbar />
 
       <Routes>
+<<<<<<< HEAD
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -54,6 +67,18 @@ function App() {
           }
         />
 
+=======
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Public Harvest Calendar route.
+            Admin, seller, customer, and outsider can all see this page. */}
+        <Route path="/harvest-calendar" element={<HarvestCalendar />} />
+
+        {/* Admin Routes */}
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/admin/seller-approval"
           element={
@@ -62,7 +87,12 @@ function App() {
             </PrivateRoute>
           }
         />
+<<<<<<< HEAD
 
+=======
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/track-order" element={<OrderStatus />} />
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/admin/delivery-slots"
           element={
@@ -72,6 +102,10 @@ function App() {
           }
         />
 
+<<<<<<< HEAD
+=======
+        {/* Seller Routes */}
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/seller/products"
           element={
@@ -118,6 +152,7 @@ function App() {
         />
 
         <Route
+<<<<<<< HEAD
           path="/seller/harvest-calendar"
           element={
             <PrivateRoute role="seller">
@@ -136,6 +171,8 @@ function App() {
         />
 
         <Route
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
           path="/seller/delivery-slots"
           element={
             <PrivateRoute role="seller">
@@ -153,6 +190,10 @@ function App() {
           }
         />
 
+<<<<<<< HEAD
+=======
+        {/* Customer Routes */}
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/cart"
           element={
@@ -190,6 +231,7 @@ function App() {
         />
 
         <Route
+<<<<<<< HEAD
           path="/wallet"
           element={
             <PrivateRoute role="customer">
@@ -217,6 +259,8 @@ function App() {
         />
 
         <Route
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
           path="/customer/activity"
           element={
             <PrivateRoute role="customer">
@@ -225,6 +269,11 @@ function App() {
           }
         />
 
+<<<<<<< HEAD
+=======
+<Route path="/products/:productId/reviews" element={<ProductReview />} />
+
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/polls"
           element={
@@ -234,6 +283,10 @@ function App() {
           }
         />
 
+<<<<<<< HEAD
+=======
+        {/* Chat Route */}
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         <Route
           path="/chat"
           element={

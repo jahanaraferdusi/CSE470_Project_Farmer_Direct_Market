@@ -33,7 +33,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+<<<<<<< HEAD
     
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
     referralCode: { type: String, unique: true },
     hasReferred: { type: Boolean, default: false }, // can refer only once
     referredBy: { type: String, default: null }, // store code used
