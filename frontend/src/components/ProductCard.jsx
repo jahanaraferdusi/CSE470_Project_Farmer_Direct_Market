@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
+import { Link } from "react-router-dom";
+import API from "../services/api";
+
+=======
 import axios from "axios";
 const addToCompare = async (productId) => {
   await axios.post("/api/compare/add", {
@@ -10,6 +15,7 @@ const addToCompare = async (productId) => {
 <button onClick={() => addToCompare(product._id)}>
   Compare
 </button>
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const ProductCard = ({ product, onAddToCart }) => {
   const [loading, setLoading] = useState(false);
   const [wished, setWished] = useState(false);
@@ -26,7 +32,11 @@ const ProductCard = ({ product, onAddToCart }) => {
     try {
       setLoading(true);
 
+<<<<<<< HEAD
+      await API.post("/wishlist/add", {
+=======
       await axios.post("http://localhost:5000/api/wishlist/add", {
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         userId,
         productId: product._id,
       });
@@ -46,6 +56,31 @@ const ProductCard = ({ product, onAddToCart }) => {
 
   return (
     <div className="product-card">
+<<<<<<< HEAD
+      <Link
+        to={`/products/${product._id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <div
+          style={{
+            minHeight: "120px",
+            background: "#f3f8ef",
+            borderRadius: "14px",
+            marginBottom: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#245c2f",
+            fontWeight: "800",
+            fontSize: "18px",
+            textAlign: "center",
+            padding: "14px",
+          }}
+        >
+          {product.name}
+        </div>
+      </Link>
+=======
       <div
         style={{
           minHeight: "120px",
@@ -64,6 +99,7 @@ const ProductCard = ({ product, onAddToCart }) => {
       >
         {product.name}
       </div>
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 
       <div
         style={{
@@ -139,6 +175,8 @@ const ProductCard = ({ product, onAddToCart }) => {
         ) : null}
       </div>
 
+<<<<<<< HEAD
+=======
       {product.averageRating !== undefined && (
         <p style={{ margin: "8px 0", color: "#607064" }}>
           <strong>Rating:</strong>{" "}
@@ -148,6 +186,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         </p>
       )}
 
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
       <p style={{ margin: "8px 0 16px", color: "#607064" }}>
         <strong>Available Stock:</strong> {product.stock}
       </p>
@@ -184,8 +223,25 @@ const ProductCard = ({ product, onAddToCart }) => {
         </button>
       )}
 
+<<<<<<< HEAD
+      <Link
+        to={`/products/${product._id}`}
+        className="secondary-btn"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "10px",
+        }}
+      >
+        View Product
+      </Link>
+
+      <Link
+        to={`/products/${product._id}/reviews`}
+=======
       <a
         href={`/products/${product._id}/reviews`}
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         className="secondary-btn"
         style={{
           display: "block",
@@ -194,7 +250,11 @@ const ProductCard = ({ product, onAddToCart }) => {
         }}
       >
         Reviews
+<<<<<<< HEAD
+      </Link>
+=======
       </a>
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
     </div>
   );
 };

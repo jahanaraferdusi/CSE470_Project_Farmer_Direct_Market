@@ -16,6 +16,8 @@ import SellerStock from "./pages/SellerStock";
 import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import SellerPolls from "./pages/SellerPolls";
+import SellerOrders from "./pages/SellerOrders";
+
 import OrderStatus from "./pages/OrderStatus";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
@@ -23,12 +25,14 @@ import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import CustomerPolls from "./pages/CustomerPolls";
+import Wallet from "./pages/Wallet";
 import Compare from "./pages/compare";
+
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
 import ProductReview from "./pages/ProductReview";
+import ProductDetails from "./pages/ProductDetails";
 import DeliverySlots from "./pages/DeliverySlots";
-import SellerOrders from "./pages/SellerOrders";
 
 function App() {
   return (
@@ -40,10 +44,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* Public Harvest Calendar route.
-            Admin, seller, customer, and outsider can all see this page. */}
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
+        <Route path="/products/:productId/reviews" element={<ProductReview />} />
 
         {/* Admin Routes */}
         <Route
@@ -54,8 +56,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/compare" element={<Compare />} />
-        <Route path="/track-order" element={<OrderStatus />} />
+
         <Route
           path="/admin/delivery-slots"
           element={
@@ -107,6 +108,24 @@ function App() {
           element={
             <PrivateRoute role="seller">
               <SellerWishlistStats />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/harvest-calendar"
+          element={
+            <PrivateRoute role="seller">
+              <HarvestCalendar />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/seller/reviews"
+          element={
+            <PrivateRoute role="seller">
+              <ProductReview />
             </PrivateRoute>
           }
         />
@@ -176,6 +195,42 @@ function App() {
         />
 
         <Route
+          path="/wallet"
+          element={
+            <PrivateRoute role="customer">
+              <Wallet />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/products/:productId"
+          element={
+            <PrivateRoute role="customer">
+              <ProductDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/compare"
+          element={
+            <PrivateRoute role="customer">
+              <Compare />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/track-order"
+          element={
+            <PrivateRoute role="customer">
+              <OrderStatus />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/customer/activity"
           element={
             <PrivateRoute role="customer">
@@ -183,8 +238,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
-<Route path="/products/:productId/reviews" element={<ProductReview />} />
 
         <Route
           path="/polls"

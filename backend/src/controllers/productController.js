@@ -67,6 +67,10 @@ const addProduct = async (req, res, next) => {
       discountPercentage,
       isDiscounted,
     } = req.body;
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
     const numericPrice = Number(price);
     const numericOriginalPrice = originalPrice ? Number(originalPrice) : null;
 
@@ -78,7 +82,15 @@ const addProduct = async (req, res, next) => {
     const normalizedDiscountPercentage = normalizedOriginalPrice
       ? Number(
           discountPercentage ||
+<<<<<<< HEAD
+            (
+              ((normalizedOriginalPrice - numericPrice) /
+                normalizedOriginalPrice) *
+              100
+            ).toFixed(2)
+=======
             (((normalizedOriginalPrice - numericPrice) / normalizedOriginalPrice) * 100).toFixed(2)
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
         )
       : 0;
 
@@ -114,6 +126,10 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const getDiscountedProducts = async (req, res, next) => {
   try {
     const products = await Product.find({
@@ -128,6 +144,10 @@ const getDiscountedProducts = async (req, res, next) => {
     next(error);
   }
 };
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const getAllProducts = async (req, res, next) => {
   try {
     const { search, category, minPrice, maxPrice, sort, inStock } = req.query;
@@ -183,6 +203,28 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
+const getProductById = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId).populate(
+      "seller",
+      "name email"
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+};
+
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const updateStock = async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -265,8 +307,16 @@ const getSellerSpoilageAlerts = async (req, res, next) => {
 module.exports = {
   addProduct,
   getAllProducts,
+<<<<<<< HEAD
+  getProductById,
+=======
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
   getDiscountedProducts,
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40

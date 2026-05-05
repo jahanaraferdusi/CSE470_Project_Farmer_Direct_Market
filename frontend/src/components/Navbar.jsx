@@ -34,6 +34,7 @@ const Navbar = () => {
             <Link to="/checkout">Checkout</Link>
             <Link to="/wishlist">Wishlist</Link>
             <Link to="/gift-card">Gift Card</Link>
+            <Link to="/wallet">Smart Wallet</Link>
             <Link to="/customer/activity">My Activity</Link>
             <Link to="/polls">Product Polls</Link>
             <Link to="/chat">Chat</Link>
