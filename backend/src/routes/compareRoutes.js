@@ -1,19 +1,14 @@
 const express = require("express");
-const { isLoggedIn } = require("../middlewares/authMiddleware");
-const authorizeRoles = require("../middlewares/roleMiddleware");
+const router = express.Router();
 
 const {
   addToCompare,
   removeFromCompare,
-  getCompareList,
-  comparePrices,
+  comparePrices
 } = require("../controllers/compareController");
 
-const router = express.Router();
-
-router.get("/", isLoggedIn, authorizeRoles("customer"), getCompareList);
-router.post("/add", isLoggedIn, authorizeRoles("customer"), addToCompare);
-router.post("/remove", isLoggedIn, authorizeRoles("customer"), removeFromCompare);
-router.get("/prices", isLoggedIn, authorizeRoles("customer"), comparePrices);
+router.post("/add", addToCompare);
+router.post("/remove", removeFromCompare);
+router.get("/:customerId", comparePrices);
 
 module.exports = router;

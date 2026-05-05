@@ -5,7 +5,6 @@ const authorizeRoles = require("../middlewares/roleMiddleware");
 const {
   checkout,
   getMyOrders,
-  getSellerOrders,
   getSellerDeliverySlots,
   getAdminDeliverySlots,
 } = require("../controllers/orderController");
@@ -13,9 +12,6 @@ const {
 const router = express.Router();
 
 router.get("/my-orders", isLoggedIn, authorizeRoles("customer"), getMyOrders);
-
-// ✅ Seller Manage Orders page
-router.get("/seller/orders", isLoggedIn, authorizeRoles("seller"), getSellerOrders);
 
 router.get(
   "/seller/delivery-slots",

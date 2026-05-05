@@ -29,6 +29,11 @@ const register = async (req, res, next) => {
         role: user.role,
         sellerVerified: user.sellerVerified,
         isBanned: user.isBanned,
+        referralCode: user.referralCode,
+        walletDiscount: user.walletDiscount,
+        hasReferred: user.hasReferred,
+        referredBy: user.referredBy,
+        usedReferral: user.usedReferral,
       },
       token: createToken(user),
     });
@@ -64,6 +69,11 @@ const login = async (req, res, next) => {
         role: user.role,
         sellerVerified: user.sellerVerified,
         isBanned: user.isBanned,
+        referralCode: user.referralCode,
+        walletDiscount: user.walletDiscount,
+        hasReferred: user.hasReferred,
+        referredBy: user.referredBy,
+        usedReferral: user.usedReferral,
       },
       token: createToken(user),
     });
@@ -71,19 +81,7 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
-const generateReferralCode = async(name) => {
-    return name.substring(0, 3).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-    const referralCode = generateReferralCode(name);
-
-    const user = await User.create({
-      name,
-      email,
-      password,
-      referralCode,
-    });
-};
 module.exports = {
   register,
   login,
-  generateReferralCode,
 };

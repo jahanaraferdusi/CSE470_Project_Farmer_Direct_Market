@@ -1,5 +1,27 @@
 const User = require("../models/User");
 
+const createReferralCode = (name = "USER") => {
+  const prefix = name
+    .replace(/[^a-zA-Z]/g, "")
+    .substring(0, 3)
+    .toUpperCase()
+    .padEnd(3, "X");
+
+  return `${prefix}${Math.floor(1000 + Math.random() * 9000)}`;
+};
+
+const generateUniqueReferralCode = async (name) => {
+  let referralCode;
+  let exists = true;
+
+  while (exists) {
+    referralCode = createReferralCode(name);
+    exists = await User.exists({ referralCode });
+  }
+
+  return referralCode;
+};
+
 const getMyProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -65,44 +87,89 @@ const unbanUser = async (req, res, next) => {
     next(error);
   }
 };
-const applyReferralCode = async (req, res) => {
-    const { code } = req.body;
-    const user = await User.findById(req.user._id);
+const generateMyReferralCode = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
 
-    if (user.usedReferral) {
-        return res.status(400).json({ message: "Referral already used" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const referrer = await User.findOne({ referralCode: code });
+    if (user.referralCode) {
+      return res.status(200).json({
+        message: "Referral code already exists",
+        referralCode: user.referralCode,
+        user,
+      });
+    }
+
+    user.referralCode = await generateUniqueReferralCode(user.name);
+    await user.save();
+
+    res.status(201).json({
+      message: "Referral code generated successfully",
+      referralCode: user.referralCode,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const applyReferralCode = async (req, res, next) => {
+  try {
+    const code = String(req.body.code || "").trim().toUpperCase();
+
+    if (!code) {
+      return res.status(400).json({ message: "Referral code is required" });
+    }
+
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.usedReferral) {
+      return res.status(400).json({ message: "Referral already used" });
+    }
+
+    const referrer = await User.findOne({ referralCode: code }).select("-password");
 
     if (!referrer) {
-        return res.status(404).json({ message: "Invalid referral code" });
+      return res.status(404).json({ message: "Invalid referral code" });
     }
 
     if (referrer._id.toString() === user._id.toString()) {
-        return res.status(400).json({ message: "Cannot use your own code" });
+      return res.status(400).json({ message: "Cannot use your own code" });
     }
 
-    // Give 5% to referred user
+    // Give 5% discount to the user who applies the code.
     user.walletDiscount += 5;
     user.usedReferral = true;
     user.referredBy = code;
 
-    // Give 10% to referrer (only once)
+    // Give 10% discount to the referrer only once.
     if (!referrer.hasReferred) {
-        referrer.walletDiscount += 10;
-        referrer.hasReferred = true;
+      referrer.walletDiscount += 10;
+      referrer.hasReferred = true;
     }
 
     await user.save();
     await referrer.save();
 
-    res.json({ message: "Referral applied successfully" });
+    res.status(200).json({
+      message: "Referral applied successfully. 5% discount added to your checkout wallet.",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 module.exports = {
   getMyProfile,
   getAllUsers,
   banUser,
   unbanUser,
+  generateMyReferralCode,
   applyReferralCode,
 };

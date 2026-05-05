@@ -1,4 +1,4 @@
-require("dotenv").config(); // keep this
+require("dotenv").config(); // ✅ ADD THIS LINE
 
 const express = require("express");
 const morgan = require("morgan");
@@ -20,9 +20,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const orderStatusRoutes = require("./routes/orderStatusRoutes");
-
-// ✅ KEEP wallet (your feature)
-const walletRoutes = require("./routes/walletRoutes");
+const returnRoutes = require("./routes/returnRoutes");
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
@@ -55,10 +53,8 @@ app.use("/api/gift-cards", giftCardRoutes);
 app.use("/api/polls", pollRoutes);
 app.use("/api/seed", seedRoutes);
 app.use("/api/order-status", orderStatusRoutes);
+app.use("/api/returns", returnRoutes);
 app.use("/api/compare", compareRoutes);
-
-// ✅ KEEP wallet route
-app.use("/api/wallet", walletRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

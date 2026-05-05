@@ -1,1 +1,0 @@
-<p>Your Referral Code: {user.referralCode}</p>

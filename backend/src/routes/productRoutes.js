@@ -5,7 +5,6 @@ const authorizeRoles = require("../middlewares/roleMiddleware");
 const {
   addProduct,
   getAllProducts,
-  getProductById,
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
@@ -14,12 +13,9 @@ const {
 
 const router = express.Router();
 
-// ✅ Public routes
 router.get("/", getAllProducts);
-router.get("/discounted", getDiscountedProducts);
-router.get("/:productId", getProductById);
 
-// ✅ Seller: spoilage alerts
+// seller spoilage alerts
 router.get(
   "/seller/spoilage-alerts",
   isLoggedIn,
@@ -27,7 +23,7 @@ router.get(
   getSellerSpoilageAlerts
 );
 
-// ✅ Seller: view own products
+// seller views own products
 router.get(
   "/seller/:sellerId",
   isLoggedIn,
@@ -35,20 +31,13 @@ router.get(
   getSellerProducts
 );
 
-// ✅ Seller: add product
-router.post(
-  "/",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  addProduct
-);
+// seller adds product
+router.post("/", isLoggedIn, authorizeRoles("seller"), addProduct);
 
-// ✅ Seller: update stock & expiry
-router.put(
-  "/:productId/stock",
-  isLoggedIn,
-  authorizeRoles("seller"),
-  updateStock
-);
+// seller updates stock and expiry
+router.put("/:productId/stock", isLoggedIn, authorizeRoles("seller"), updateStock);
+
+// seller can get discounts
+router.get("/discounted", getDiscountedProducts);
 
 module.exports = router;

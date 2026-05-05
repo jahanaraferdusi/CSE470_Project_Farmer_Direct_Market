@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const deliverySlots = [
   "08:00 AM - 11:00 AM",
@@ -12,6 +13,7 @@ const deliverySlots = [
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   // ✅ Referral State
   const [referralCode, setReferralCode] = useState("");
@@ -28,9 +30,17 @@ const Checkout = () => {
 
   // ================= APPLY REFERRAL =================
   const applyReferral = async () => {
+    const code = referralCode.trim();
+
+    if (!code) {
+      alert("Please enter a referral code.");
+      return;
+    }
+
     try {
-      await API.post("/users/referral", { code: referralCode });
-      alert("Referral Applied Successfully!");
+      const res = await API.post("/users/apply-referral", { code });
+      await refreshUser();
+      alert(res.data?.message || "Referral applied successfully!");
       setReferralCode("");
     } catch (error) {
       alert(error.response?.data?.message || "Invalid referral code");
@@ -87,7 +97,7 @@ const Checkout = () => {
           className="form-input"
         />
 
-        <button className="primary-btn" onClick={applyReferral}>
+        <button type="button" className="primary-btn" onClick={applyReferral}>
           Apply Referral
         </button>
       </div>

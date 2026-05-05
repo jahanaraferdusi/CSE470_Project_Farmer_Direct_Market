@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
@@ -16,8 +16,7 @@ import SellerStock from "./pages/SellerStock";
 import SellerWishlistStats from "./pages/SellerWishlistStats";
 import SellerSpoilageAlerts from "./pages/SellerSpoilageAlerts";
 import SellerPolls from "./pages/SellerPolls";
-import SellerOrders from "./pages/SellerOrders";
-
+import SellerReturnedProducts from "./pages/SellerReturnedProducts";
 import OrderStatus from "./pages/OrderStatus";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
@@ -25,14 +24,12 @@ import Wishlist from "./pages/Wishlist";
 import CustomerActivityTabs from "./pages/CustomerActivityTabs";
 import GiftCard from "./pages/GiftCard";
 import CustomerPolls from "./pages/CustomerPolls";
-import Wallet from "./pages/Wallet";
 import Compare from "./pages/compare";
-
 import HarvestCalendar from "./pages/HarvestCalendar";
 import Chat from "./pages/Chat";
 import ProductReview from "./pages/ProductReview";
-import ProductDetails from "./pages/ProductDetails";
 import DeliverySlots from "./pages/DeliverySlots";
+import Reffer from "./pages/Reffer";
 
 function App() {
   return (
@@ -44,8 +41,21 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Public Harvest Calendar route.
+            Admin, seller, customer, and outsider can all see this page. */}
         <Route path="/harvest-calendar" element={<HarvestCalendar />} />
-        <Route path="/products/:productId/reviews" element={<ProductReview />} />
+
+
+        <Route
+          path="/reffer"
+          element={
+            <PrivateRoute allowedRoles={["admin", "seller", "customer"]}>
+              <Reffer />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/profile" element={<Navigate to="/reffer" replace />} />
 
         {/* Admin Routes */}
         <Route
@@ -56,7 +66,8 @@ function App() {
             </PrivateRoute>
           }
         />
-
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/track-order" element={<OrderStatus />} />
         <Route
           path="/admin/delivery-slots"
           element={
@@ -113,24 +124,6 @@ function App() {
         />
 
         <Route
-          path="/seller/harvest-calendar"
-          element={
-            <PrivateRoute role="seller">
-              <HarvestCalendar />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/seller/reviews"
-          element={
-            <PrivateRoute role="seller">
-              <ProductReview />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
           path="/seller/delivery-slots"
           element={
             <PrivateRoute role="seller">
@@ -149,10 +142,10 @@ function App() {
         />
 
         <Route
-          path="/seller/orders"
+          path="/seller/returned-products"
           element={
             <PrivateRoute role="seller">
-              <SellerOrders />
+              <SellerReturnedProducts />
             </PrivateRoute>
           }
         />
@@ -195,42 +188,6 @@ function App() {
         />
 
         <Route
-          path="/wallet"
-          element={
-            <PrivateRoute role="customer">
-              <Wallet />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/products/:productId"
-          element={
-            <PrivateRoute role="customer">
-              <ProductDetails />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/compare"
-          element={
-            <PrivateRoute role="customer">
-              <Compare />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/track-order"
-          element={
-            <PrivateRoute role="customer">
-              <OrderStatus />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
           path="/customer/activity"
           element={
             <PrivateRoute role="customer">
@@ -238,6 +195,8 @@ function App() {
             </PrivateRoute>
           }
         />
+
+<Route path="/products/:productId/reviews" element={<ProductReview />} />
 
         <Route
           path="/polls"

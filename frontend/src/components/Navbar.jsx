@@ -28,13 +28,14 @@ const Navbar = () => {
           </>
         )}
 
+        {user && <Link to="/reffer">Reffer</Link>}
+
         {user?.role === "customer" && (
           <>
             <Link to="/cart">Cart</Link>
             <Link to="/checkout">Checkout</Link>
             <Link to="/wishlist">Wishlist</Link>
             <Link to="/gift-card">Gift Card</Link>
-            <Link to="/wallet">Smart Wallet</Link>
             <Link to="/customer/activity">My Activity</Link>
             <Link to="/polls">Product Polls</Link>
             <Link to="/chat">Chat</Link>
@@ -54,7 +55,7 @@ const Navbar = () => {
             <Link to="/seller/reviews">Product Reviews</Link>
             <Link to="/seller/delivery-slots">Delivery Slots</Link>
             <Link to="/seller/polls">Product Polls</Link>
-            <Link to="/seller/orders">Manage Orders</Link>
+            <Link to="/seller/returned-products">Returned Products</Link>
             <Link to="/chat">Chats</Link>
           </>
         )}

@@ -1,16 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import API from "../services/api";
 
-const tabButtonStyle = (active) => ({
-  padding: "10px 16px",
-  borderRadius: "8px",
-  border: "1px solid #ccc",
-  cursor: "pointer",
-  backgroundColor: active ? "#1f7a1f" : "#fff",
-  color: active ? "#fff" : "#222",
-  fontWeight: active ? "bold" : "normal",
-});
-
 const cardStyle = {
   border: "1px solid #ddd",
   borderRadius: "10px",
@@ -19,16 +9,70 @@ const cardStyle = {
   backgroundColor: "#fff",
 };
 
+const getReturnButtonConfig = (order) => {
+  const returnStatus = order.returnSummary?.status;
+
+  if (returnStatus === "Approved") {
+    return {
+      show: true,
+      label: "Returned",
+      disabled: true,
+      backgroundColor: "#1f7a1f",
+      color: "#fff",
+    };
+  }
+
+  if (returnStatus === "Denied") {
+    return {
+      show: true,
+      label: "Denied",
+      disabled: true,
+      backgroundColor: "#c0392b",
+      color: "#fff",
+    };
+  }
+
+  if (returnStatus === "Pending") {
+    return {
+      show: true,
+      label: "Return Requested",
+      disabled: true,
+      backgroundColor: "#d98c00",
+      color: "#fff",
+    };
+  }
+
+  if (returnStatus === "Partially Approved") {
+    return {
+      show: true,
+      label: "Partially Returned",
+      disabled: true,
+      backgroundColor: "#2463eb",
+      color: "#fff",
+    };
+  }
+
+  if (order.status === "Delivered") {
+    return {
+      show: true,
+      label: "Return",
+      disabled: false,
+      backgroundColor: "#1f7a1f",
+      color: "#fff",
+    };
+  }
+
+  return { show: false };
+};
+
 const CustomerActivityTabs = () => {
-  const [activeTab, setActiveTab] = useState("orders");
   const [orders, setOrders] = useState([]);
-  const [discountedProducts, setDiscountedProducts] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const [loadingDiscounts, setLoadingDiscounts] = useState(true);
+  const [actionMessage, setActionMessage] = useState("");
+  const [processingOrderId, setProcessingOrderId] = useState("");
 
   useEffect(() => {
     fetchOrders();
-    fetchDiscountedProducts();
   }, []);
 
   const fetchOrders = async () => {
@@ -43,15 +87,25 @@ const CustomerActivityTabs = () => {
     }
   };
 
-  const fetchDiscountedProducts = async () => {
+  const handleReturnRequest = async (orderId) => {
+    const confirmReturn = window.confirm(
+      "Are you sure you want to send a refund request to the seller?"
+    );
+
+    if (!confirmReturn) {
+      return;
+    }
+
     try {
-      setLoadingDiscounts(true);
-      const res = await API.get("/products/discounted");
-      setDiscountedProducts(res.data);
+      setProcessingOrderId(orderId);
+      setActionMessage("");
+      const res = await API.post(`/returns/request/${orderId}`);
+      setActionMessage(res.data.message || "Return request sent successfully.");
+      await fetchOrders();
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to load discounted products");
+      alert(error.response?.data?.message || "Failed to send return request.");
     } finally {
-      setLoadingDiscounts(false);
+      setProcessingOrderId("");
     }
   };
 
@@ -63,85 +117,80 @@ const CustomerActivityTabs = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h2>My Activity</h2>
-      <p>Track what you ordered and quickly browse products currently on discount.</p>
+      <p>Track your product order history and return requests.</p>
 
-      <div style={{ display: "flex", gap: "10px", marginTop: "16px", marginBottom: "20px" }}>
-        <button style={tabButtonStyle(activeTab === "orders")} onClick={() => setActiveTab("orders")}>
-          Product Order History
-        </button>
-        <button style={tabButtonStyle(activeTab === "discounts")} onClick={() => setActiveTab("discounts")}>
-          Discounted Products
-        </button>
-      </div>
-
-      {activeTab === "orders" && (
-        <div>
-          <div style={{ ...cardStyle, backgroundColor: "#f6fff6" }}>
-            <strong>Total Orders:</strong> {orders.length}
-            <br />
-            <strong>Total Spent:</strong> ৳ {totalSpent}
-          </div>
-
-          {loadingOrders ? (
-            <p>Loading order history...</p>
-          ) : orders.length === 0 ? (
-            <p>No order history found yet.</p>
-          ) : (
-            orders.map((order) => (
-              <div key={order._id} style={cardStyle}>
-                <h3 style={{ marginTop: 0 }}>Order ID: {order._id}</h3>
-                <p><strong>Status:</strong> {order.status}</p>
-                <p><strong>Ordered On:</strong> {new Date(order.createdAt).toLocaleString()}</p>
-                <p><strong>Shipping Address:</strong> {order.shippingAddress}</p>
-                <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
-                <p><strong>Total:</strong> ৳ {order.totalAmount}</p>
-
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Items:</strong>
-                  <ul>
-                    {order.items.map((item, index) => (
-                      <li key={`${order._id}-${index}`}>
-                        {item.product?.name || "Product removed"} — Qty: {item.quantity} — Price: ৳ {item.price}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+      {actionMessage && (
+        <div style={{ ...cardStyle, backgroundColor: "#f6fff6" }}>{actionMessage}</div>
       )}
 
-      {activeTab === "discounts" && (
-        <div>
-          {loadingDiscounts ? (
-            <p>Loading discounted products...</p>
-          ) : discountedProducts.length === 0 ? (
-            <p>No discounted products are available right now.</p>
-          ) : (
-            discountedProducts.map((product) => (
-              <div key={product._id} style={cardStyle}>
-                <h3 style={{ marginTop: 0 }}>{product.name}</h3>
-                <p><strong>Category:</strong> {product.category}</p>
-                <p><strong>Seller:</strong> {product.seller?.name || "Unknown Seller"}</p>
-                <p>
-                  <strong>Discounted Price:</strong> ৳ {product.price}
-                  {product.originalPrice && (
-                    <>
-                      {" "}
-                      <span style={{ textDecoration: "line-through", color: "#666" }}>
-                        ৳ {product.originalPrice}
-                      </span>
-                    </>
-                  )}
-                </p>
-                <p><strong>Discount:</strong> {product.discountPercentage || 0}% off</p>
-                <p><strong>Stock Left:</strong> {product.stock}</p>
-                {product.description && <p><strong>Description:</strong> {product.description}</p>}
+      <div style={{ ...cardStyle, backgroundColor: "#f6fff6" }}>
+        <strong>Total Orders:</strong> {orders.length}
+        <br />
+        <strong>Total Spent:</strong> ৳ {totalSpent}
+      </div>
+
+      {loadingOrders ? (
+        <p>Loading order history...</p>
+      ) : orders.length === 0 ? (
+        <p>No order history found yet.</p>
+      ) : (
+        orders.map((order) => {
+          const returnButton = getReturnButtonConfig(order);
+
+          return (
+            <div key={order._id} style={cardStyle}>
+              <h3 style={{ marginTop: 0 }}>Order #{order._id.slice(-6).toUpperCase()}</h3>
+              <p><strong>Status:</strong> {order.status}</p>
+              <p><strong>Ordered On:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+              <p><strong>Shipping Address:</strong> {order.shippingAddress}</p>
+              <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
+              <p><strong>Total:</strong> ৳ {order.totalAmount}</p>
+
+              <div style={{ marginTop: "10px" }}>
+                <strong>Items:</strong>
+                <ul>
+                  {order.items.map((item, index) => (
+                    <li key={`${order._id}-${index}`}>
+                      {item.product?.name || "Product removed"} — Qty: {item.quantity} — Price: ৳ {item.price}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))
-          )}
-        </div>
+
+              {returnButton.show && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: "16px",
+                  }}
+                >
+                  <button
+                    type="button"
+                    disabled={returnButton.disabled || processingOrderId === order._id}
+                    onClick={() => handleReturnRequest(order._id)}
+                    style={{
+                      padding: "10px 18px",
+                      borderRadius: "8px",
+                      border: "none",
+                      backgroundColor: returnButton.backgroundColor,
+                      color: returnButton.color,
+                      fontWeight: "bold",
+                      cursor:
+                        returnButton.disabled || processingOrderId === order._id
+                          ? "not-allowed"
+                          : "pointer",
+                      opacity:
+                        returnButton.disabled || processingOrderId === order._id ? 0.85 : 1,
+                    }}
+                  >
+                    {processingOrderId === order._id ? "Sending..." : returnButton.label}
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })
       )}
     </div>
   );
