@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-require("dotenv").config(); 
-=======
-require("dotenv").config(); // ✅ ADD THIS LINE
+require("dotenv").config(); // keep this
 
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -24,10 +20,9 @@ const chatRoutes = require("./routes/chatRoutes");
 const giftCardRoutes = require("./routes/giftCardRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const orderStatusRoutes = require("./routes/orderStatusRoutes");
-<<<<<<< HEAD
+
+// ✅ KEEP wallet (your feature)
 const walletRoutes = require("./routes/walletRoutes");
-=======
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
@@ -61,11 +56,10 @@ app.use("/api/polls", pollRoutes);
 app.use("/api/seed", seedRoutes);
 app.use("/api/order-status", orderStatusRoutes);
 app.use("/api/compare", compareRoutes);
-<<<<<<< HEAD
-app.use("/api/wallet", walletRoutes);
-=======
 
->>>>>>> 6f247cf3ea6bcebfaa3d1a57d037b81cf1d14c40
+// ✅ KEEP wallet route
+app.use("/api/wallet", walletRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 
