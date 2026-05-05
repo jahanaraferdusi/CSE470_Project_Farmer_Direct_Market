@@ -13,7 +13,6 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes.js");
 const seedRoutes = require("./routes/seedRoutes");
-const compareRoutes = require("./routes/compareRoutes");
 const harvestCalendarRoutes = require("./routes/harvestCalendarRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -26,6 +25,8 @@ const returnRoutes = require("./routes/returnRoutes");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
 const app = express();
+
+
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -49,9 +50,6 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/harvest-calendar", harvestCalendarRoutes);
 app.use("/api/reviews", reviewRoutes);
-app.use("/api/chats", chatRoutes);
-app.use("/api/gift-cards", giftCardRoutes);
-app.use("/api/polls", pollRoutes);
 app.use("/api/seed", seedRoutes);
 app.use("/api/order-status", orderStatusRoutes);
 app.use("/api/returns", returnRoutes);

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 const ProductCard = ({ product, onAddToCart }) => {
+  const isOutOfStock = product.stock <= 0;
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -13,8 +14,7 @@ const ProductCard = ({ product, onAddToCart }) => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = localStorage.getItem("userId");
-  const isOutOfStock = product.stock <= 0;
-
+  const user = JSON.parse(localStorage.getItem("user"));
   const handleAddToWishlist = async () => {
     if (!userId) {
       alert("Please login first");
@@ -40,6 +40,11 @@ const ProductCard = ({ product, onAddToCart }) => {
       setLoading(false);
     }
   };
+const handleChatWithSeller = async () => {
+  if (!userId) {
+    alert("Please login first");
+    return;
+  }
 
   const handleAddToCompare = async () => {
     if (!user || user.role !== "customer") {
@@ -213,26 +218,30 @@ const ProductCard = ({ product, onAddToCart }) => {
 
       {product.stock > 0 ? (
         <button
-          type="button"
-          className="primary-btn"
           onClick={() => onAddToCart(product._id)}
-          style={{ width: "100%" }}
+          style={{
+            padding: "8px",
+            backgroundColor: "green",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
         >
           Add to Cart
         </button>
       ) : (
         <button
-          type="button"
-          className={wished ? "secondary-btn" : "danger-btn"}
           onClick={handleAddToWishlist}
           disabled={loading || wished}
-          style={{ width: "100%" }}
+          style={{
+            padding: "8px",
+            backgroundColor: wished ? "gray" : "crimson",
+            color: "white",
+            border: "none",
+            cursor: wished ? "not-allowed" : "pointer",
+          }}
         >
-          {loading
-            ? "Adding..."
-            : wished
-            ? "❤️ Added to Wishlist"
-            : "❤️ Add to Wishlist"}
+          {wished ? "❤️ Added to Wishlist" : "❤️ Add to Wishlist"}
         </button>
       )}
 
@@ -302,5 +311,5 @@ const ProductCard = ({ product, onAddToCart }) => {
     </div>
   );
 };
-
-export default ProductCard;
+};
+export default { ProductCard };

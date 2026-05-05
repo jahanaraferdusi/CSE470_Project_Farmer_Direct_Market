@@ -8,7 +8,6 @@ const {
   updateStock,
   getSellerProducts,
   getSellerSpoilageAlerts,
-  getDiscountedProducts,
 } = require("../controllers/productController");
 
 const router = express.Router();
@@ -36,8 +35,5 @@ router.post("/", isLoggedIn, authorizeRoles("seller"), addProduct);
 
 // seller updates stock and expiry
 router.put("/:productId/stock", isLoggedIn, authorizeRoles("seller"), updateStock);
-
-// seller can get discounts
-router.get("/discounted", getDiscountedProducts);
 
 module.exports = router;

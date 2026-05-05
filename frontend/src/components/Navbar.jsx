@@ -12,21 +12,22 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
-      <Link to="/" className="navbar-brand">
-        Farmer Direct Market
-      </Link>
+    <nav style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
+      <Link to="/">Home</Link>{" "}
+      <Link to="/harvest-calendar">Harvest Calendar</Link>{" "}
 
-      <div className="navbar-links">
-        <Link to="/">Home</Link>
-        <Link to="/harvest-calendar">Harvest Calendar</Link>
+      {!user && (
+        <>
+          <Link to="/login">Login</Link>{" "}
+          <Link to="/register">Register</Link>
+        </>
+      )}
 
-        {!user && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
+      {user?.role === "admin" && (
+        <>
+          <Link to="/admin/sellers">Verify Sellers / Manage Users</Link>{" "}
+        </>
+      )}
 
 
         {user?.role === "customer" && (
@@ -61,19 +62,14 @@ const Navbar = () => {
           </>
         )}
 
-        {user?.role === "admin" && (
-          <>
-            <Link to="/admin/seller-approval">Seller Approval</Link>
-            <Link to="/admin/delivery-slots">Delivery Slots</Link>
-          </>
-        )}
-
-        {user && (
-          <button type="button" onClick={handleLogout}>
-            Logout
-          </button>
-        )}
-      </div>
+      {user && (
+        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
+          Logout
+        </button>
+      )}
+      {(user?.role === "customer" || user?.role === "seller") && (
+      <Link to="/chat">Chat</Link>
+     )}
     </nav>
   );
 };

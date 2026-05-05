@@ -1,19 +1,5 @@
 const mongoose = require("mongoose");
 
-const sellerReplySchema = new mongoose.Schema(
-  {
-    text: {
-      type: String,
-      trim: true,
-    },
-
-    repliedAt: {
-      type: Date,
-    },
-  },
-  { _id: false }
-);
-
 const reviewSchema = new mongoose.Schema(
   {
     product: {
@@ -39,11 +25,6 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-
-    sellerReply: {
-      type: sellerReplySchema,
-      default: null,
     },
   },
   { timestamps: true }

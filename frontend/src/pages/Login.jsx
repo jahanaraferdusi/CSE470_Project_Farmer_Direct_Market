@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,9 +10,6 @@ const initialForm = {
 
 const Login = () => {
   const [form, setForm] = useState(initialForm);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const { loginUser } = useAuth();
   const navigate = useNavigate();
 
@@ -22,15 +19,11 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setForm((prev) => ({ ...prev, [name]: value }));
-    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
     try {
       const payload = { ...form };
@@ -40,7 +33,7 @@ const Login = () => {
       loginUser(res.data.user, res.data.token);
 
       if (res.data.user.role === "admin") {
-        navigate("/admin/seller-approval", { replace: true });
+        navigate("/admin/sellers", { replace: true });
       } else if (res.data.user.role === "seller") {
         const alertRes = await API.get("/products/seller/spoilage-alerts");
 
@@ -55,71 +48,34 @@ const Login = () => {
       }
     } catch (error) {
       setForm((prev) => ({ ...prev, password: "" }));
-      setError(error.response?.data?.message || "Login failed.");
-    } finally {
-      setLoading(false);
+      alert(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="page-container" style={{ maxWidth: "520px" }}>
-      <div className="page-header">
-        <h1 className="page-title">Welcome Back</h1>
-        <p className="page-subtitle">
-          Login to continue shopping fresh farm products.
-        </p>
-      </div>
+    <form onSubmit={handleSubmit} autoComplete="off">
+      <h2>Login</h2>
 
-      {error && <div className="error-box">{error}</div>}
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter email"
+        value={form.email}
+        onChange={handleChange}
+        autoComplete="off"
+      />
 
-      <form className="page-card" onSubmit={handleSubmit} autoComplete="off">
-        <h2 className="card-title">Login</h2>
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter password"
+        value={form.password}
+        onChange={handleChange}
+        autoComplete="new-password"
+      />
 
-        <div className="form-grid">
-          <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <input
-              className="form-input"
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="off"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              className="form-input"
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="new-password"
-              required
-            />
-          </div>
-
-          <button type="submit" className="primary-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </div>
-
-        <p style={{ marginTop: "18px", color: "#607064" }}>
-          Don&apos;t have an account?{" "}
-          <Link
-            to="/register"
-            style={{ color: "#2e7d32", fontWeight: "800" }}
-          >
-            Register here
-          </Link>
-        </p>
-      </form>
-    </div>
+      <button type="submit">Login</button>
+    </form>
   );
 };
 

@@ -14,17 +14,9 @@ const allowedDeliverySlots = [
 
 const checkout = async (req, res, next) => {
   try {
-    const { shippingAddress, paymentMethod, deliverySlot } = req.body;
+    const { shippingAddress, paymentMethod } = req.body;
 
-    if (!deliverySlot || !allowedDeliverySlots.includes(deliverySlot)) {
-      return res.status(400).json({
-        message: "Please select a valid delivery slot.",
-      });
-    }
-
-    const cart = await Cart.findOne({ customer: req.user._id }).populate(
-      "items.product"
-    );
+    const cart = await Cart.findOne({ customer: req.user._id }).populate("items.product");
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -72,7 +64,6 @@ const checkout = async (req, res, next) => {
       totalAmount,
       paymentMethod,
       shippingAddress,
-      deliverySlot,
       status: "Pending",
     });
 

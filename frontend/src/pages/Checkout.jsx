@@ -15,94 +15,90 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
 
-  // ✅ Referral State
   const [referralCode, setReferralCode] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Checkout Form
   const [form, setForm] = useState({
     shippingAddress: "",
     paymentMethod: "Cash on Delivery",
     deliverySlot: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  // ================= APPLY REFERRAL =================
   const applyReferral = async () => {
     const code = referralCode.trim();
 
     if (!code) {
-      alert("Please enter a referral code.");
+      setMessage("Please enter a referral code.");
       return;
     }
 
     try {
       const res = await API.post("/users/apply-referral", { code });
-      await refreshUser();
-      alert(res.data?.message || "Referral applied successfully!");
+
+      if (refreshUser) {
+        await refreshUser();
+      }
+
+      setMessage(res.data?.message || "Referral applied successfully!");
       setReferralCode("");
     } catch (error) {
-      alert(error.response?.data?.message || "Invalid referral code");
+      setMessage(error.response?.data?.message || "Invalid referral code");
     }
   };
 
-  // ================= CHECKOUT =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+
+    if (!form.shippingAddress || !form.deliverySlot) {
+      setMessage("Please fill all required fields.");
+      return;
+    }
 
     try {
+      setLoading(true);
+
       await API.post("/orders/checkout", form);
 
-      setMessage("Checkout successful. Redirecting to cart...");
-
-      setForm({
-        shippingAddress: "",
-        paymentMethod: "Cash on Delivery",
-        deliverySlot: "",
-      });
-
-      setTimeout(() => {
-        navigate("/cart");
-      }, 900);
+      alert("Checkout successful");
+      navigate("/customer/activity");
     } catch (error) {
-      setMessage(error.response?.data?.message || "Checkout failed.");
+      setMessage(error.response?.data?.message || "Checkout failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="page-container" style={{ maxWidth: "700px" }}>
-      
-      {/* HEADER */}
+    <div className="page-container">
       <div className="page-header">
         <h1 className="page-title">Checkout</h1>
         <p className="page-subtitle">
-          Confirm delivery information and apply referral if available.
+          Confirm your delivery details and place your order.
         </p>
       </div>
 
-      {/* ================= REFERRAL SECTION ================= */}
-      <div className="page-card">
-        <h2 className="card-title">Apply Referral Code</h2>
+      <div className="page-card" style={{ marginBottom: "18px" }}>
+        <h2 className="card-title">Referral Code</h2>
 
-        <input
-          type="text"
-          placeholder="Enter referral code"
-          value={referralCode}
-          onChange={(e) => setReferralCode(e.target.value)}
-          className="form-input"
-        />
+        <div className="form-grid">
+          <div className="form-group">
+            <label className="form-label">Referral Code</label>
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Enter referral code"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value)}
+            />
+          </div>
 
-        <button type="button" className="primary-btn" onClick={applyReferral}>
-          Apply Referral
-        </button>
+          <button type="button" className="primary-btn" onClick={applyReferral}>
+            Apply Referral
+          </button>
+        </div>
       </div>
 
-      {/* ================= MESSAGE ================= */}
       {message && (
         <div
           className={
@@ -115,12 +111,10 @@ const Checkout = () => {
         </div>
       )}
 
-      {/* ================= CHECKOUT FORM ================= */}
       <form className="page-card" onSubmit={handleSubmit}>
         <h2 className="card-title">Delivery Details</h2>
 
         <div className="form-grid">
-          {/* Address */}
           <div className="form-group">
             <label className="form-label">Shipping Address</label>
             <textarea
@@ -134,7 +128,6 @@ const Checkout = () => {
             />
           </div>
 
-          {/* Delivery Slot */}
           <div className="form-group">
             <label className="form-label">Delivery Slot</label>
             <select
@@ -154,7 +147,6 @@ const Checkout = () => {
             </select>
           </div>
 
-          {/* Payment */}
           <div className="form-group">
             <label className="form-label">Payment Method</label>
             <select
@@ -164,14 +156,13 @@ const Checkout = () => {
                 setForm({ ...form, paymentMethod: e.target.value })
               }
             >
-              <option value="Cash on Delivery">
-                Cash on Delivery
-              </option>
+              <option value="Cash on Delivery">Cash on Delivery</option>
             </select>
           </div>
 
           <div className="info-box">
-            <strong>Note:</strong> Delivery slot will be visible to seller and admin.
+            <strong>Note:</strong> Delivery slot will be visible to seller and
+            admin.
           </div>
 
           <button type="submit" className="primary-btn" disabled={loading}>
